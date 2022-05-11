@@ -1,0 +1,38 @@
+Package: RankspeQ
+Title: MultispeQAnalyser: A novel tool for genotype selection based on a phenotyping device
+Version: 0.1.0
+Authors@R: 
+  c(person("Jonatan", "Soto", , "j.s.soto@cgiar.org", role = c("aut", "cre")),
+    person("Johan", "Aparicio", , "johanstevenapa@gmail.com", role = c("aut")))
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: 
+    broom,
+    collapsibleTree,
+    cvms,
+    dplyr,
+    DT,
+    EnvStats,
+    ez,
+    imputeTS,
+    lme4,
+    lmerTest,
+    lubridate,
+    magrittr,
+    mice,
+    moments,
+    permute,
+    plotly,
+    plyr,
+    propr,
+    reshape,
+    robustbase,
+    SpATS,
+    stringr,
+    TestDataImputation,
+    tibble,
+    tidytext,
+    VIM
