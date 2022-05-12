@@ -17,6 +17,7 @@ Imports:
     DT,
     EnvStats,
     ez,
+    ggplot2,
     imputeTS,
     lme4,
     lmerTest,
