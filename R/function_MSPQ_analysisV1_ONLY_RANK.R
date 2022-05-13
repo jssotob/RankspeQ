@@ -273,7 +273,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
     N <- nrow(spl[[j]])
 
     for(i in seq_len(length(Dm) - 1)) {
-      perm <- shuffle(N)
+      perm <- permute::shuffle(N)
       Dm[i] <- with(spl[[j]], meanRatio(phi_index, time[perm]))
     }
 
@@ -301,7 +301,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   if("DAS" %in% SoV){
 
     odd_out <- odd_rat %>%
-      filter(Eval == TRUE) %>%
+      dplyr::filter(Eval == TRUE) %>%
       group_by_(.dots = SoV[4:length(SoV)]) %>%
       tally %>%
       arrange(desc(n))
@@ -309,13 +309,15 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   } else {
 
     odd_out <- odd_rat %>%
-      filter(Eval == TRUE) %>%
+      dplyr::filter(Eval == TRUE) %>%
       group_by_(.dots = SoV[3:length(SoV)]) %>%
       tally %>%
       arrange(desc(n))
   }
 
-  odd_out <- collapsibleTree(odd_out, hierarchy = names(odd_out))
+  odd_out <- collapsibleTree::collapsibleTree(odd_out,
+                                              hierarchy = names(odd_out),
+                                              linkLength = 120)
   } else {
     odd_out <- "Procedure not done since time.dif = FALSE in MSPQ_tidy()"
   }
@@ -354,7 +356,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
                                         clean_out= FALSE, iterations=1, checks = NULL))
         })
 
-        blups[[s]] <- do.call(cbind, lapply(modelos, function(x)data.frame(v = predict(x, which = out$Genotype, predFixed = "marginal")[,"predicted.values"])))
+        blups[[s]] <- do.call(cbind, lapply(modelos, function(x)data.frame(v = EnvStats::predict(x, which = out$Genotype, predFixed = "marginal")[,"predicted.values"])))
         names(blups[[s]]) <- varia
 
         blups[[s]] <- cbind(spat_split[[s]] %>% dplyr::select_(.dots = c(SoV, row, column)), blups[[s]])
@@ -386,7 +388,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   }
 
 
-  dates_rank <- lapply(as.character(unique(to_rank$date)), function(x)filter(to_rank, date == x))
+  dates_rank <- lapply(as.character(unique(to_rank$date)), function(x)dplyr::filter(to_rank, date == x))
 
   x <- c("LEF","NPQt","Phi2","PhiNO","PhiNPQ","PS1.Oxidized.Centers","FmPrime","FvP_over_FmP",
          "phi_index", "gH.", "P700_DIRK_ampl","Leaf.Temperature.Differential","PS1.Active.Centers",
