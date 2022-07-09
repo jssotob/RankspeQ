@@ -3,5 +3,3 @@
 export(MSPQ_ranks)
 export(MSPQ_tidy)
 export(yield_calibration)
-importFrom("stats", "as.formula", "filter", "median", "predict",
-               "time", "weights")
