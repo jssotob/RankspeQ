@@ -160,7 +160,7 @@ cat("Plotting confusion matrices... \n")
              col = case_when(eval == TRUE~"Predicted",
                              clus.m >= (max(clus.m)-falses)+1&clus.y <= falses~"False positive",
                              clus.y >= (max(clus.m)-falses)+1&clus.m <= falses~"False negative",
-                             TRUE~"No predicted"))
+                             TRUE~"Low prediction"))
   }
   rm(i)
 
@@ -297,7 +297,7 @@ cat("Plotting confusion matrices... \n")
           suppressMessages(descriptors[[i]][[j]] %<>%
             group_by_(.dots = c("DAS", "date", arr_SoV)) %>%
             dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
-                             No_Predicted = sum(col == "No predicted", na.rm = T),
+                             No_Predicted = sum(col == "Low prediction", na.rm = T),
                              False_Positive = sum(col == "False positive", na.rm = T),
                              False_Negative = sum(col == "False negative", na.rm = T)) %>%
             ungroup %>%
@@ -314,7 +314,7 @@ cat("Plotting confusion matrices... \n")
             suppressMessages(descriptors[[i]][[j]] %<>%
                                group_by_(.dots = c("date", arr_SoV)) %>%
                                dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
-                                                No_Predicted = sum(col == "No predicted", na.rm = T),
+                                                No_Predicted = sum(col == "Low prediction", na.rm = T),
                                                 False_Positive = sum(col == "False positive", na.rm = T),
                                                 False_Negative = sum(col == "False negative", na.rm = T)) %>%
                                ungroup %>%
@@ -370,7 +370,7 @@ cat("Plotting confusion matrices... \n")
       suppressMessages(ssss %<>%
         group_by_(.dots = c(ranks$Genotype, arr_SoV, cols)) %>%
         dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
-                         No_Predicted = sum(col == "No predicted", na.rm = T),
+                         No_Predicted = sum(col == "Low prediction", na.rm = T),
                          False_Positive = sum(col == "False positive", na.rm = T),
                          False_Negative = sum(col == "False negative", na.rm = T)) %>%
         ungroup())
@@ -394,7 +394,7 @@ cat("Plotting confusion matrices... \n")
     suppressMessages(ssss %<>%
       group_by_(.dots = ranks$Genotype, arr_SoV) %>%
       dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
-                       No_Predicted = sum(col == "No predicted", na.rm = T),
+                       No_Predicted = sum(col == "Low prediction", na.rm = T),
                        False_Positive = sum(col == "False positive", na.rm = T),
                        False_Negative = sum(col == "False negative", na.rm = T)) %>%
       ungroup())
