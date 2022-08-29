@@ -354,7 +354,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
                  theme(axis.text.x = element_text(angle = 90, hjust = 1),
                        axis.text.y = element_text(size = 5))+
                  labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time))),
-                      x = out$Genotype))}
+                      x = out$Genotype, y = "Final Score"))}
     )
 
     } else {
@@ -369,7 +369,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
                    theme(axis.text.x = element_text(angle = 90, hjust = 1),
                          axis.text.y = element_text(size = 5))+
                    labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time)), collapse = "_"),
-                        x = out$Genotype))}
+                        x = out$Genotype, y = "Final Score"))}
       )
     }
 
