@@ -1,8 +1,8 @@
 Package: RankspeQ
-Title: MultispeQAnalyser: A novel tool for genotype selection based on a phenotyping device
-Version: 0.1.0
+Title: RankspeQ: A novel tool for genotype selection based on MultispeQ measurements
+Version: 1.0
 Authors@R: 
-  c(person("Jonatan", "Soto", , "j.s.soto@cgiar.org", role = c("aut", "cre")),
+  c(person("Jonatan", "Soto", , "jssotob@gmail.com", role = c("aut", "cre")),
     person("Johan", "Aparicio", , "johanstevenapa@gmail.com", role = c("aut")))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
