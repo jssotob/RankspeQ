@@ -158,9 +158,9 @@ cat("Plotting confusion matrices... \n")
                               clus.y-1 == clus.m~TRUE,
                               TRUE~FALSE),
              col = case_when(eval == TRUE~"Predicted",
-                             clus.m >= (max(clus.m)-falses)+1&clus.y <= falses~"False positive",
-                             clus.y >= (max(clus.m)-falses)+1&clus.m <= falses~"False negative",
-                             TRUE~"Low prediction"))
+                             clus.m >= (max(clus.m)-falses)+1&clus.y <= falses~"False Positive",
+                             clus.y >= (max(clus.m)-falses)+1&clus.m <= falses~"False Negative",
+                             TRUE~"Low Prediction"))
   }
   rm(i)
 
@@ -297,9 +297,9 @@ cat("Plotting confusion matrices... \n")
           suppressMessages(descriptors[[i]][[j]] %<>%
             group_by_(.dots = c("DAS", "date", arr_SoV)) %>%
             dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
-                             No_Predicted = sum(col == "Low prediction", na.rm = T),
-                             False_Positive = sum(col == "False positive", na.rm = T),
-                             False_Negative = sum(col == "False negative", na.rm = T)) %>%
+                             No_Predicted = sum(col == "Low Prediction", na.rm = T),
+                             False_Positive = sum(col == "False Positive", na.rm = T),
+                             False_Negative = sum(col == "False Negative", na.rm = T)) %>%
             ungroup %>%
             gather(., key = "x", value = "Number_of_Genotypes",Predicted, No_Predicted, False_Positive, False_Negative) %>%
             mutate(.,s = as.data.frame(descriptors[[i]][[j]])[1, cols[i]],
@@ -314,9 +314,9 @@ cat("Plotting confusion matrices... \n")
             suppressMessages(descriptors[[i]][[j]] %<>%
                                group_by_(.dots = c("date", arr_SoV)) %>%
                                dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
-                                                No_Predicted = sum(col == "Low prediction", na.rm = T),
-                                                False_Positive = sum(col == "False positive", na.rm = T),
-                                                False_Negative = sum(col == "False negative", na.rm = T)) %>%
+                                                No_Predicted = sum(col == "Low Prediction", na.rm = T),
+                                                False_Positive = sum(col == "False Positive", na.rm = T),
+                                                False_Negative = sum(col == "False Negative", na.rm = T)) %>%
                                ungroup %>%
                                gather(., key = "x", value = "Number_of_Genotypes",Predicted, No_Predicted, False_Positive, False_Negative) %>%
                                mutate(.,s = as.data.frame(descriptors[[i]][[j]])[1, cols[i]],
@@ -341,6 +341,7 @@ cat("Plotting confusion matrices... \n")
       descriptors[[i]][[j]] <-descriptors[[i]][[j]] %>%
         ggplot(aes(x = DAS, y = Number_of_Genotypes, fill = factor(x, levels = c("Predicted","No_Predicted","False_Positive","False_Negative"))))+
         geom_bar(stat = "identity", position = position_dodge(1))+
+        scale_fill_discrete(labels = c("Predicted","Low Prediction","False Positive","False Negative"))+
         theme_bw()+
         theme(legend.title = element_blank())+
         labs(title = title, x = "Days After Sowing", y = "Ocurrences (#)")
