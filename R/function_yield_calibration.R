@@ -16,7 +16,7 @@ yield_calibration <- function(ranks, yield.file, yield.name, metadata = NULL){
 
 
 # yield calibration -------------------------------------------------------
-# p_load(reshape, DT, plotly)
+
 
   if(!is.null(yield.file)){
     if(!is.data.frame(yield.file)){

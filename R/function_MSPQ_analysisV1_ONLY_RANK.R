@@ -19,11 +19,6 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
                           spats = FALSE, row = NULL, column = NULL,
                           pl.date = FALSE){
 
-  # library(pacman)
-  # p_load(tidyverse, magrittr, lmerTest, lme4, permute, vegan,
-  #        collapsibleTree, EnvStats, SpATS, lubridate,cvms, broom, tibble, moments, tidytext)
-
-
   # Begining ----------------------------------------------------------------
 
   df_a <- out[["numeric_dataset"]]

@@ -244,7 +244,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
                gap=3, ylab=c("Missing data","Pattern"))$missings
 
   miss %<>%
-    dplyr::filter(Count!= 0) ########OUTPUT
+    dplyr::filter(Count!= 0) #######OUTPUT
 
   if(nrow(miss)>0){
 
