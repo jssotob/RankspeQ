@@ -227,7 +227,7 @@ cat("Plotting confusion matrices... \n")
 
 
     if("DAS" %in% ranks$Sources_of_variation){
-    conf_matrices[[i]] <- ggplotly(ggplot(aaa,aes_string(x = "factor(clus.y)", y = "factor(clus.m)", fill = "factor(col)",
+    conf_matrices[[i]] <- plotly::ggplotly(ggplot(aaa,aes_string(x = "factor(clus.y)", y = "factor(clus.m)", fill = "factor(col)",
                                                          text = "name"))+
                                      geom_raster(alpha = 0.95)+
                                      theme_classic()+
@@ -235,7 +235,7 @@ cat("Plotting confusion matrices... \n")
                                           x = "Yield cluster", y = "MultispeQ cluster", fill = ""), tooltip="text")
     names(conf_matrices)[i] <- paste0(data_loop$DAS[1]," ", as.character(data_loop$time[1]), " ", unique(data_loop[,arr_SoV]))
     } else {
-      conf_matrices[[i]] <- ggplotly(ggplot(aaa,aes_string(x = "factor(clus.y)", y = "factor(clus.m)", fill = "factor(col)",
+      conf_matrices[[i]] <- plotly::ggplotly(ggplot(aaa,aes_string(x = "factor(clus.y)", y = "factor(clus.m)", fill = "factor(col)",
                                                            text = "name"))+
                                        geom_raster(alpha = 0.95)+
                                        theme_classic()+
@@ -303,7 +303,7 @@ cat("Plotting confusion matrices... \n")
             ungroup %>%
             gather(., key = "x", value = "Number_of_Genotypes",Predicted, No_Predicted, False_Positive, False_Negative) %>%
             mutate(.,s = as.data.frame(descriptors[[i]][[j]])[1, cols[i]],
-                   date = ymd(date)))
+                   date = lubridate::ymd(date)))
           names(descriptors[[i]])[[j]] <- paste0(as.data.frame(descriptors[[i]][[j]])[1, "s"], " ", paste0(descriptors[[i]][[j]][1, arr_SoV], collapse = " "))
         }
         names(descriptors)[[i]] <- cols[i]
@@ -320,7 +320,7 @@ cat("Plotting confusion matrices... \n")
                                ungroup %>%
                                gather(., key = "x", value = "Number_of_Genotypes",Predicted, No_Predicted, False_Positive, False_Negative) %>%
                                mutate(.,s = as.data.frame(descriptors[[i]][[j]])[1, cols[i]],
-                                      date = ymd(date)))
+                                      date = lubridate::ymd(date)))
             names(descriptors[[i]])[[j]] <- paste0(as.data.frame(descriptors[[i]][[j]])[1, "s"], " ", paste0(descriptors[[i]][[j]][1, arr_SoV], collapse = " "))
           }
           names(descriptors)[[i]] <- cols[i]
@@ -352,7 +352,7 @@ cat("Plotting confusion matrices... \n")
           for(j in 1:length(descriptors[[i]])){
             title <- paste0(as.data.frame(descriptors[[i]][[j]])[1, "s"], " ", paste0(descriptors[[i]][[j]][1, arr_SoV], collapse = " "))
 
-            descriptors[[i]][[j]] <- ggplotly(descriptors[[i]][[j]] %>%
+            descriptors[[i]][[j]] <- plotly::ggplotly(descriptors[[i]][[j]] %>%
                                                 ggplot(aes(x = date, y = Number_of_Genotypes, fill = factor(x, levels = c("Predicted","No_Predicted","False_Positive","False_Negative"))))+
                                                 geom_bar(stat = "identity", position = position_dodge(4.9))+
                                                 theme_bw()+

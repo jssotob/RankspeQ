@@ -15,10 +15,8 @@
 #' }
 MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE){
 
-  # if("pacman" %in% rownames(installed.packages()) == FALSE) {install.packages("pacman")}
-  # library(pacman)
-  # p_load(plotly, robustbase, TestDataImputation, imputeTS, installr, stringr, magrittr,
-  #        ez, lubridate, tidyverse, plyr, VIM, propr, collapsibleTree)
+  suppressWarnings(suppressMessages(library(dplyr)))
+  suppressWarnings(suppressMessages(library(magrittr)))
 
   if("Leaf.Temperature.Differenial" %in% names(df)) df %<>% dplyr::select(-Leaf.Temperature.Differenial)
 
@@ -67,7 +65,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
   r_full <- nrow(df)
   c_full <- ncol(df)
   delete <- which(names(df) == "Plot.1")
-  if(!is.empty(delete)){df <- df[,-delete]}
+  if(!installr::is.empty(delete)){df <- df[,-delete]}
   rm(delete)
   #-----Replacing null for NA-----
   cat("Replacing null for NA\n")
@@ -141,7 +139,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
       factor_index[i] <- i
     }else if(length(unique(df[,i])) == 3 || length(which(is.na(df[,i]))) >= round(nrow(df)*0.5,digits = 0)){
       factor_index[i] <- i
-    } else if (is.Date(df[,i])){
+    } else if (lubridate::is.Date(df[,i])){
       factor_index[i] <- i
     }
 
@@ -173,35 +171,35 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
   if("PS1.Active.Centers" %in% namescol){
     delete <- nas("PS1.Active.Centers", 50)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"PS1.Active.Centers"] <- NA_real_
     }
   }
 
   if("PS1.Open.Centers" %in% namescol){
     delete <- nas("PS1.Open.Centers", 50)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"PS1.Open.Centers"] <- NA_real_
     }
   }
 
   if("PS1.Over.Reduced.Centers" %in% namescol){
     delete <- nas("PS1.Over.Reduced.Centers", 50)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"PS1.Over.Reduced.Centers"] <- NA_real_
     }
   }
 
   if("PS1.Oxidized.Centers" %in% namescol){
     delete <- nas("PS1.Oxidized.Centers", 50)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"PS1.Oxidized.Centers"] <- NA_real_
     }
   }
 
   if("NPQt" %in% namescol){
     delete <- nas("NPQt", 15)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"NPQt"] <- NA_real_
     }
   }
@@ -209,28 +207,28 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
   if("vH." %in% namescol){
     delete <- nas("vH.", 10)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"vH."] <- NA_real_
     }
   }
 
   if("ECSt.mAU" %in% namescol){
     delete <- nas("ECSt.mAU", 10)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"ECSt.mAU"] <- NA_real_
     }
   }
 
   if("gH." %in% namescol){
     delete <- nas("gH.", 1100)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"gH."] <- NA_real_
     }
   }
 
   if("ECS_tau" %in% namescol){
     delete <- nas("ECS_tau", 100)
-    if(!is.empty(delete)){
+    if(!installr::is.empty(delete)){
       num_df[delete,"ECS_tau"] <- NA_real_
     }
   }
@@ -260,8 +258,11 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
     new <- list()
 
     j<-ncol(to_impute)-1
-    pbar <- create_progress_bar('text')
-    pbar$init(j)
+    pbar <- txtProgressBar(min = 0,
+                           max = j,
+                           style = 3,
+                           width = 50,
+                           char = "=")
 
     for(j in 2:length(to_impute)){
       var <- to_impute[,c(1,j)] #### c(1,j)
@@ -307,8 +308,9 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
       new[[j]] <- data.frame(dates[,2])
       colnames(new[[j]]) <- names(var)[2]
       rm(dates, var, imputes)
-      pbar$step()
+      setTxtProgressBar(pbar, j)
     }
+    close(pbar)
     cat("\n")
 
     rm(i,j)
@@ -419,7 +421,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
   f_indices <- unique(c(absorbance_index, clo_index,location_index))
   f_indices <- f_indices[!is.na(f_indices)]
 
-  if(!is.empty(f_indices)){
+  if(!installr::is.empty(f_indices)){
     factor_df <- cbind(factor_df,num_df[,f_indices])
     num_df <- num_df[,-f_indices]
   }
@@ -465,7 +467,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
   #-----Making final df-----
 
   cat("Making final df\n")
-  if(!is.empty(final_removals)){
+  if(!installr::is.empty(final_removals)){
     num_df <- num_df[-final_removals,]
     factor_df <- factor_df[-final_removals,]
     rm_data <- df[final_removals,]
@@ -507,7 +509,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
     if(any(rm_table$Freq==0)){
       rm_table <- rm_table[-which(rm_table[,"Freq"]==0),]
     }
-    rm_table$date <- ymd(rm_table$date)
+    rm_table$date <- lubridate::ymd(rm_table$date)
     rm_table %<>% arrange(desc(Freq))
     rm_table <- collapsibleTree::collapsibleTree(rm_table, hierarchy = names(rm_table), collapsed = TRUE, linkLength = 120)
 

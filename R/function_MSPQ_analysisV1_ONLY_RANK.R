@@ -72,10 +72,10 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
     }
 
     if(any(c("N", "NO") %in% multi)){
-      p.date <- suppressWarnings(mdy((readline("Please type the planting date in format mm/dd/yyyy: "))))
+      p.date <- suppressWarnings(lubridate::mdy((readline("Please type the planting date in format mm/dd/yyyy: "))))
 
       while(is.na(p.date)){
-        p.date <- suppressWarnings(mdy((readline("Wrong answer, check the date format. Please type the planting date in format mm/dd/yyyy: "))))
+        p.date <- suppressWarnings(lubridate::mdy((readline("Wrong answer, check the date format. Please type the planting date in format mm/dd/yyyy: "))))
       }
 
       cat(paste0("The planting date provided is: ", p.date, '\n'))
@@ -86,15 +86,24 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
     } else{
 
-      p.dates.factor <- (readline(paste0("Which of the '", paste0(arr_SoV, collapse = ", "), "' '", out$Genotype, "' was sown in multiple dates: ")))
+      p.dates.factor <- (readline(paste0("Which of the '",
+                                         paste0(arr_SoV, collapse = ", "),
+                                         "' '", out$Genotype, "' was sown in multiple dates: ")))
+
+      while(!any(c(arr_SoV,out$Genotype) %in% p.dates.factor)){
+        p.dates.factor <- (readline(paste0("Wrong answer, please try again. Which of the '",
+                                           paste0(arr_SoV, collapse = ", "), "' '",
+                                           out$Genotype, "' was sown in multiple dates: ")))
+      }
+
       p.dates <- list()
 
       for(a in 1:length(unique(df_a[,p.dates.factor]))){
         p.dates[[a]] <- (readline(paste0("Please type the planting date for ", unique(df_a[,p.dates.factor])[a], " in format mm/dd/yyyy: ")))
-        p.dates[[a]] <- suppressWarnings(mdy(p.dates[[a]]))
+        p.dates[[a]] <- suppressWarnings(lubridate::mdy(p.dates[[a]]))
 
         while(is.na(p.dates[[a]])){
-          p.dates[[a]] <- suppressWarnings(mdy(readline(paste0("Wrong answer, check the date format. Please type the planting date for ", unique(df_a[,p.dates.factor])[a], " in format mm/dd/yyyy: "))))
+          p.dates[[a]] <- suppressWarnings(lubridate::mdy(readline(paste0("Wrong answer, check the date format. Please type the planting date for ", unique(df_a[,p.dates.factor])[a], " in format mm/dd/yyyy: "))))
         }
         cat(paste0("The planting date provided for ", unique(df_a[,p.dates.factor])[a],  " is: ", p.dates[[a]], '\n'))
 
@@ -117,25 +126,25 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   means <- df_a %>%              #Outputs
     as_tibble %>%
     group_by(.dots = SoV) %>%
-    summarise_if(.predicate = "is.numeric", .funs = "mean") %>%
+    summarise_if(is.numeric, .funs = mean) %>%
     ungroup
 
   st_d <- df_a %>%               #Outputs
     as_tibble %>%
     group_by(.dots = SoV) %>%
-    summarise_if(.predicate = "is.numeric", .funs = "sd") %>%
+    summarise_if(is.numeric, .funs = sd) %>%
     ungroup
 
   var_coef <- df_a %>%           #Outputs
     as_tibble %>%
     group_by(.dots = SoV) %>%
-    summarise_if(.predicate = "is.numeric", .funs = "cv") %>%
+    summarise_if(is.numeric, .funs = EnvStats::cv) %>%
     ungroup
 
   medians <- df_a %>%            #Outputs
     as_tibble %>%
     group_by(.dots = SoV) %>%
-    summarise_if(.predicate = "is.numeric", .funs = "median") %>%
+    summarise_if(is.numeric, .funs = median) %>%
     ungroup
 
 
@@ -160,8 +169,11 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   odd_rat <- list()
 
   j <- length(spl)
-  pbar <- create_progress_bar('text')
-  pbar$init(j)
+  pbar <- txtProgressBar(min = 0,
+                         max = j,
+                         style = 3,
+                         width = 50,
+                         char = "=")
 
   for(j in 1:length(spl)){
     Dm <- numeric(length = perIter)
@@ -184,8 +196,9 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
              Rless = D,
              p.value = pv_perm,
              Eval = pv_perm<0.05)
-    pbar$step()
+    setTxtProgressBar(pbar, j)
   }
+  close(pbar)
   cat("\n")
 
   rm(j,spl)
@@ -241,8 +254,11 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
       blups <- list()
 
       s <- length(spat_split)
-      pbar <- create_progress_bar('text')
-      pbar$init(s)
+      pbar <- txtProgressBar(min = 0,
+                             max = s,
+                             style = 3,
+                             width = 50,
+                             char = "=")
 
       for(s in 1:length(spat_split)){
         modelos <- lapply(varia, function(z){
@@ -255,10 +271,10 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
         names(blups[[s]]) <- varia
 
         blups[[s]] <- cbind(spat_split[[s]] %>% dplyr::select_(.dots = c(SoV, row, column)), blups[[s]])
-        pbar$step()
+        setTxtProgressBar(pbar, s)
 
       }
-
+      close(pbar)
       cat("\n")
       rm(s)
 
@@ -331,7 +347,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
     ranks[[y]] <- do.call(rbind, per_date)
   }
 
-  ranks <- join_all(ranks, by= SoV, type='left')
+  ranks <- plyr::join_all(ranks, by= SoV, type='left')
   scores <- paste0(x,"_score")
   names(ranks)[grep("x", names(ranks))] <- scores
   ranks$final_score <- rowSums(ranks[,grep("_score", names(ranks))])
@@ -345,12 +361,12 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
   if("DAS" %in% SoV){
     plot_rank <- lapply(plots, function(s){
-      ggplotly(s %>%
-                 ggplot(aes_string(x = paste0("reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
+      plotly::ggplotly(s %>%
+                 ggplot(aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
                  geom_point() +
                  facet_wrap(~DAS, scales = "free_y", nrow = 2) +
                  coord_flip() +
-                 scale_x_reordered()+
+                 tidytext::scale_x_reordered()+
                  theme(axis.text.x = element_text(angle = 90, hjust = 1),
                        axis.text.y = element_text(size = 5))+
                  labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time))),
@@ -360,8 +376,8 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
     } else {
 
       plot_rank <- lapply(plots, function(s){
-        ggplotly(s %>%
-                   ggplot(aes_string(x = paste0("reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
+        plotly::ggplotly(s %>%
+                   ggplot(aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
                    geom_point() +
                    facet_wrap(~date, scales = "free_y", nrow = 2) +
                    coord_flip() +
