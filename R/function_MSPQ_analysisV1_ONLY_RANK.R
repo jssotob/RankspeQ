@@ -48,7 +48,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
   if(!spats){
     ind <- grep(pattern = "^col|^row|^fil", x = tolower(SoV))
-    if(!is.empty(ind)){
+    if(!installr::is.empty(ind)){
       SoV <- SoV[-ind]
       rm(ind)
     }
