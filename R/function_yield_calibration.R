@@ -392,23 +392,32 @@ cat("Plotting confusion matrices... \n")
   } else{
     ssss <- do.call(rbind, conam)
 
+    yield.cluster <- ssss[,c(ranks$Genotype,"clus.y", "clus.m")] %>%
+      group_by_(.dots = ranks$Genotype) %>%
+      dplyr::summarise(clus.y = round(mean(clus.y, na.rm = T)),
+                       clus.m = round(mean(clus.m, na.rm = T)))
+
     suppressMessages(ssss %<>%
       group_by_(.dots = ranks$Genotype, arr_SoV) %>%
       dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
-                       No_Predicted = sum(col == "Low prediction", na.rm = T),
-                       False_Positive = sum(col == "False positive", na.rm = T),
-                       False_Negative = sum(col == "False negative", na.rm = T)) %>%
+                       Low_Prediction = sum(col == "Low Prediction", na.rm = T),
+                       False_Positive = sum(col == "False Positive", na.rm = T),
+                       False_Negative = sum(col == "False Negative", na.rm = T)) %>%
       ungroup())
-
+    if(is.character(ranks$permutes)){
+      suppressMessages(dates <-  do.call(rbind, conam) %>%
+                         group_by_(.dots = ranks$Genotype, arr_SoV) %>%
+                         dplyr::summarise(Dates = dplyr::n()) %>%
+                         ungroup())
+    }else{
     suppressMessages(dates <-  do.call(rbind, conam) %>%
       group_by_(.dots = ranks$Genotype, arr_SoV) %>%
       dplyr::summarise(Times = dplyr::n(),
                        Dates = Times/2) %>%
       ungroup())
+}
 
-
-
-    summary_table <- suppressMessages(DT::datatable(left_join(ssss, dates)))
+   summary_table <- suppressMessages(DT::datatable(left_join(ssss, dates) %>% left_join(.,yield.cluster)))
   }
 
   cat("Making return\n")
