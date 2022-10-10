@@ -368,12 +368,17 @@ cat("Plotting confusion matrices... \n")
 
       ssss <- suppressMessages(do.call(rbind, conam) %>% left_join(.,metadata))
 
+      yield.cluster <- ssss[,c(ranks$Genotype,"clus.y", "clus.m")] %>%
+        group_by_(.dots = ranks$Genotype) %>%
+        dplyr::summarise(clus.y = round(mean(clus.y, na.rm = T)),
+                         clus.m = round(mean(clus.m, na.rm = T)))
+
       suppressMessages(ssss %<>%
         group_by_(.dots = c(ranks$Genotype, arr_SoV, cols)) %>%
         dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
-                         No_Predicted = sum(col == "Low prediction", na.rm = T),
-                         False_Positive = sum(col == "False positive", na.rm = T),
-                         False_Negative = sum(col == "False negative", na.rm = T)) %>%
+                         Low_Prediction = sum(col == "Low Prediction", na.rm = T),
+                         False_Positive = sum(col == "False Positive", na.rm = T),
+                         False_Negative = sum(col == "False Negative", na.rm = T)) %>%
         ungroup())
 
       suppressMessages(dates <-  do.call(rbind, conam) %>%
@@ -384,7 +389,8 @@ cat("Plotting confusion matrices... \n")
 
 
 
-      summary_table <- suppressMessages(DT::datatable(left_join(ssss, dates)))
+      summary_table <- suppressMessages(DT::datatable(left_join(ssss, dates) %>%
+                                                        left_join(.,yield.cluster)))
 
 
 
@@ -417,7 +423,8 @@ cat("Plotting confusion matrices... \n")
       ungroup())
 }
 
-   summary_table <- suppressMessages(DT::datatable(left_join(ssss, dates) %>% left_join(.,yield.cluster)))
+   summary_table <- suppressMessages(DT::datatable(left_join(ssss, dates) %>%
+                                                     left_join(.,yield.cluster)))
   }
 
   cat("Making return\n")
