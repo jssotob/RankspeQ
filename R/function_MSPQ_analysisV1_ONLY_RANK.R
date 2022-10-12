@@ -55,9 +55,11 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   }
 
 
-    arr_SoV <- SoV[-c(grep("date", SoV),grep("time", SoV), grep(out$Genotype, SoV))]
-
   if(pl.date){
+    arr_SoV <- SoV[-c(grep("date", SoV),grep("time", SoV), grep(out$Genotype, SoV))]
+    df_a$date_a <- df_a$date
+    df_a$date <- lubridate::mdy(df_a$date)
+
     multi <- (readline("Are there multiple planting dates? Y/N: "))
     multi <- toupper(multi)
 
@@ -109,7 +111,9 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
       p.dates <- do.call(rbind, p.dates)
       df_a <- suppressMessages(left_join(df_a, p.dates) %>%
-                                 mutate(DAS = paste0(date - planting_date, " DAS")))
+                                 mutate(DAS = paste0(date - planting_date, " DAS")) %>%
+                                 dplyr::select(-date) %>%
+                                 dplyr::rename(date = date_a))
 
     }
     SoV <- c("DAS", SoV)
@@ -146,7 +150,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   # Phi_index_permutational -------------------------------------------------
 
 
-  if(length(levels(out$numeric_dataset$time))==2){
+  if(length(unique(out$numeric_dataset$time))==2){
   cat("Phi index permutational analysis \n")
 
   meanRatio <- function(x, jornada) {
@@ -348,16 +352,35 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   ranks$final_score <- rowSums(ranks[,grep("_score", names(ranks))])
 
 
+  # Rank of Ranks -----------------------------------------------------------
+
+  final_rank_table <-  ranks %>%
+    dplyr::group_by_(.dots = c("time",out$Genotype, arr_SoV)) %>%
+    dplyr::summarise_if(is.numeric, median, na.rm = T) %>% ungroup %>%
+    as.data.frame() %>%
+    dplyr::mutate(date = "Final Genotype Ranking") %>%
+    .[,c(ncol(.),1:(ncol(.)-1))]
+
+
+  if("DAS" %in% names(ranks)){
+    final_rank_table %<>%
+      dplyr::mutate(DAS = date) %>%
+      .[,c(ncol(.),1:(ncol(.)-1))]
+   #DEFINIR COMO QUEDA RANKS/PLOTS CON DAS Y AJUSTAR
+  }
+
+  ranks <- rbind(ranks, final_rank_table)
+
   # plots -------------------------------------------------------------------
 
   plots <- as.list(group_split(ranks, .dots = c("time",arr_SoV)))
 
 
-
   if("DAS" %in% SoV){
     plot_rank <- lapply(plots, function(s){
       plotly::ggplotly(s %>%
-                 ggplot(aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
+                 ggplot(aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"),
+                                   y = 'final_score')) +
                  geom_point() +
                  facet_wrap(~DAS, scales = "free_y", nrow = 2) +
                  coord_flip() +
@@ -372,7 +395,8 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
       plot_rank <- lapply(plots, function(s){
         plotly::ggplotly(s %>%
-                   ggplot(aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
+                   ggplot(aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"),
+                                     y = 'final_score')) +
                    geom_point() +
                    facet_wrap(~date, scales = "free_y", nrow = 2) +
                    coord_flip() +
@@ -384,9 +408,17 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
       )
     }
 
+
+  for(i in 1:length(plot_rank)){
+    names(plot_rank)[i] <- paste0(unique(plots[[i]][,arr_SoV]), " ", as.character(unique(plots[[i]]$time)), collapse = "_")
+  }
+
+
   cat("Making return \n")
 
   conam <- do.call(rbind, plots)
+
+  rm(final_rank_table, ranks, plots,dates_rank,x)
 
   if(spats){
       SPATS <- c(row, column)
@@ -417,3 +449,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   return(output)
 
 }
+
+
+
+

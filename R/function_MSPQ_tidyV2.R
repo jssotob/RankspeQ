@@ -108,14 +108,12 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
     df <- separate(df,date,into = c("date", "time"), sep = " ")
 
-    df$date <- as.Date(df$date, format = "%m/%d/%Y")
-    df$time <- as.factor(df$time)
   } else {
     stop("There is not AM/PM indicator in column time and/or hour is missing, check out first\n")
   }
 
   if(!time.diff){
-    df$time <- factor("")
+    df$time <- ""
   }
 
   #-----Discarding rows with issues-----
@@ -496,8 +494,8 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
 
   #----Dropping empty levels in factors----
-  num_df[,genotype] <- as.factor(num_df[,genotype])
-  num_df <- droplevels(num_df)
+  # num_df[,genotype] <- as.factor(num_df[,genotype])
+  # num_df <- droplevels(num_df)
   factor_df <- droplevels(factor_df)
   if(is.data.frame(rm_data)){
     rm_data <- droplevels(rm_data)
@@ -509,7 +507,6 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
     if(any(rm_table$Freq==0)){
       rm_table <- rm_table[-which(rm_table[,"Freq"]==0),]
     }
-    rm_table$date <- lubridate::ymd(rm_table$date)
     rm_table %<>% arrange(desc(Freq))
     rm_table <- collapsibleTree::collapsibleTree(rm_table, hierarchy = names(rm_table), collapsed = TRUE, linkLength = 120)
 
