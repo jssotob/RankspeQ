@@ -366,7 +366,6 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
     final_rank_table %<>%
       dplyr::mutate(DAS = date) %>%
       .[,c(ncol(.),1:(ncol(.)-1))]
-   #DEFINIR COMO QUEDA RANKS/PLOTS CON DAS Y AJUSTAR
   }
 
   ranks <- rbind(ranks, final_rank_table)
