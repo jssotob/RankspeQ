@@ -344,7 +344,7 @@ cat("Plotting confusion matrices... \n")
         scale_fill_discrete(labels = c("Predicted","Low Prediction","False Positive","False Negative"))+
         theme_bw()+
         theme(legend.title = element_blank())+
-        labs(title = title, x = "Days After Sowing", y = "Ocurrences (#)")
+        labs(title = title, x = "Days After Sowing", y = "Occurrences (#)")
 
         }
       }
@@ -358,7 +358,7 @@ cat("Plotting confusion matrices... \n")
                                                 geom_bar(stat = "identity", position = position_dodge(4.9))+
                                                 theme_bw()+
                                                 theme(legend.title = element_blank())+
-                                                labs(title = title, x = "Date", y = "Ocurrences (#)"), tooltip = c("x", "y"))
+                                                labs(title = title, x = "Date", y = "Occurrences (#)"), tooltip = c("x", "y"))
 
           }
         }
