@@ -1,12 +1,12 @@
 #' MSPQ_tidy
 #'
-#' @param df data.frame
-#' @param genotype string
-#' @param time.diff logical
-#' @param data_name string
-#' @param plotIm logical
+#' @param df data.frame. The raw data set obtained from the PhotosynQ network.
+#' @param genotype string with the name of the genotype column on df.
+#' @param time.diff logical. Were the measurements repeated twice in a day? Morning & Afternoon. TRUE if so, FALSE otherwise
+#' @param data_name string with the name of the experiment.
+#' @param plotIm logical. To plot the imputed variables. FALSE by default.
 #'
-#' @return list
+#' @return A list with 8 objects if plotIm = FALSE. 9 elements otherwise.
 #' @export
 #'
 #' @examples

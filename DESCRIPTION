@@ -1,10 +1,10 @@
 Package: RankspeQ
-Title: RankspeQ: A novel tool for genotype selection based on MultispeQ measurements
+Title: RankspeQ: An R package platform for genotype characterization and performance-ranking based on MultispeQ measurements
 Version: 1.0
 Authors@R: 
   c(person("Jonatan", "Soto", , "jssotob@gmail.com", role = c("aut", "cre")),
     person("Johan", "Aparicio", , "johanstevenapa@gmail.com", role = c("aut")))
-Description: What the package does (one paragraph).
+Description: The RankspeQ is a novel R package developed to evaluate genotype performance and support selection-driven decisions based on leaf traits and also environment-related variables measured by the MultispeQ device..
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

@@ -1,11 +1,11 @@
 #' yield_calibration
 #'
-#' @param ranks ranks
-#' @param yield.file file
-#' @param yield.name name
-#' @param metadata metadata
+#' @param ranks The list obtained by MSPQ_ranks.
+#' @param yield.file data.frame in narrow format with the yield component or any other trait to contrast against MultispeQ ranking. An observation per experimental unit is required as well as the row & column coordinates if spats = TRUE in MSPQ_ranks.
+#' @param yield.name Character. name of the yield variable on yield.file to contrast against MultispeQ ranking.
+#' @param metadata data.frame in narrow format with extra information about the genotypes i.e. gene pool, known biotic/abiotic traits, etc. Optional process. NULL by default.
 #'
-#' @return list
+#' @return A list with the confusion matrices and summary of predictions.
 #' @export
 #'
 #' @examples
@@ -414,8 +414,11 @@ cat("Plotting confusion matrices... \n")
   cat("Making return\n")
 
   if(!is.null(metadata)){
-    output <- list(Conf_matrices = conf_matrices, Summary_of_predictions = eval, Summary_metadata = summary_table,
-                Metadata_tables = meta_tables, Metadata_plots = descriptors)
+    output <- list(Conf_matrices = conf_matrices,
+                   Summary_of_predictions = eval,
+                   Summary_metadata = summary_table,
+                   Metadata_tables = meta_tables,
+                   Metadata_plots = descriptors)
     if(!is.null(ranks[["SPATS_variables"]])){
       output$yield.BLUP <- yield.transf
     }
@@ -423,7 +426,9 @@ cat("Plotting confusion matrices... \n")
   return(output)
 
   } else{
-    output <- list(Conf_matrices = conf_matrices, Summary_of_predictions = eval, Summary_metadata = summary_table)
+    output <- list(Conf_matrices = conf_matrices,
+                   Summary_of_predictions = eval,
+                   Summary_metadata = summary_table)
     if(!is.null(ranks[["SPATS_variables"]])){
       output$yield.BLUP <- yield.transf
     }

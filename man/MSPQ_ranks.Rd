@@ -15,25 +15,25 @@ MSPQ_ranks(
 )
 }
 \arguments{
-\item{out}{output}
+\item{out}{The list obtained by MSPQ_tidy.}
 
-\item{perIter}{iterations}
+\item{perIter}{Integer. Number of iterations to conduct on the Phi Index permutational analysis. 100 by default.}
 
-\item{PerSeed}{seed}
+\item{PerSeed}{Integer. Randomization seed for the Phi Index permutational analysis. 123 by default.}
 
-\item{spats}{TRUE or FALSE if spatial analysis is needed}
+\item{spats}{Logical. If spatial analysis is needed and row & column coordinates are provided. FALSE by default.}
 
-\item{row}{row information}
+\item{row}{Character. Name of the row coordinate variable if spats = TRUE. NULL by default.}
 
-\item{column}{column information}
+\item{column}{Character. Name of the column coordinate variable if spats = TRUE. NULL by default.}
 
-\item{pl.date}{date}
+\item{pl.date}{Logical. Will a sampling date be provided? FALSE by default.}
 }
 \value{
-list
+A list with 11 elements if spats = TRUE. 9 otherwise.
 }
 \description{
-MSPQ_ranks
+MSPQ_ranks computes the genotype-trait classification by days-of-measurement once the data preparation is done by MSPQ_tidy(). A Phi Index permutational analysis will be conducted if the measurements were repeated in the morning and in the afternoon in the same day-of-measurement. A spatial adjustment of the MultispeQ traits will be done if the user provides row/column coordinates.
 }
 \examples{
 \dontrun{

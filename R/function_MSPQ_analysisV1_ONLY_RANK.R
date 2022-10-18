@@ -1,14 +1,14 @@
 #' MSPQ_ranks
 #'
-#' @param out output
-#' @param perIter iterations
-#' @param PerSeed seed
-#' @param spats TRUE or FALSE if spatial analysis is needed
-#' @param row row information
-#' @param column column information
-#' @param pl.date date
+#' @param out The list obtained by MSPQ_tidy.
+#' @param perIter Integer. Number of iterations to conduct on the Phi Index permutational analysis. 100 by default.
+#' @param PerSeed Integer. Randomization seed for the Phi Index permutational analysis. 123 by default.
+#' @param spats Logical. If spatial analysis is needed and row & column coordinates are provided. FALSE by default.
+#' @param row Character. Name of the row coordinate variable if spats = TRUE. NULL by default.
+#' @param column Character. Name of the column coordinate variable if spats = TRUE. NULL by default.
+#' @param pl.date Logical. Will a sampling date be provided? FALSE by default.
 #'
-#' @return list
+#' @return A list with 11 elements if spats = TRUE. 9 otherwise.
 #' @export
 #'
 #' @examples
@@ -39,12 +39,6 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
     stop("The row/column names provided not found in the dataset. Please check spelling or change the arguments")
   }
 
-
-  # if(spats){
-  #   ind <- which(SoV %in% c(row, column))
-  #   SoV <- SoV[-ind]
-  #   rm(ind)
-  # }
 
   if(!spats){
     ind <- grep(pattern = "^col|^row|^fil", x = tolower(SoV))

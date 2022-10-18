@@ -7,19 +7,19 @@
 yield_calibration(ranks, yield.file, yield.name, metadata = NULL)
 }
 \arguments{
-\item{ranks}{ranks}
+\item{ranks}{The list obtained by MSPQ_ranks.}
 
-\item{yield.file}{file}
+\item{yield.file}{data.frame in narrow format with the yield component or any other trait to contrast against MultispeQ ranking. An observation per experimental unit is required as well as the row & column coordinates if spats = TRUE in MSPQ_ranks.}
 
-\item{yield.name}{name}
+\item{yield.name}{Character. name of the yield variable on yield.file to contrast against MultispeQ ranking.}
 
-\item{metadata}{metadata}
+\item{metadata}{data.frame in narrow format with extra information about the genotypes i.e. gene pool, known biotic/abiotic traits, etc. Optional process. NULL by default.}
 }
 \value{
-list
+A list with the confusion matrices and summary of predictions.
 }
 \description{
-yield_calibration
+yield_calibration contrasts the previous genotype-trait classification of MultispeQ measurements against final yield or any other yield component of the evaluated genotypes.
 }
 \examples{
 \dontrun{

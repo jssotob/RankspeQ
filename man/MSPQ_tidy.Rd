@@ -7,21 +7,21 @@
 MSPQ_tidy(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 }
 \arguments{
-\item{df}{data.frame}
+\item{df}{data.frame The raw data set obtained from the PhotosynQ network.}
 
-\item{genotype}{string}
+\item{genotype}{string with the name of the genotype column on df.}
 
-\item{time.diff}{logical}
+\item{time.diff}{logical. Were the measurements repeated twice in a day? Morning & Afternoon. TRUE if so, FALSE otherwise}
 
-\item{data_name}{string}
+\item{data_name}{string with the name of the experiment.}
 
-\item{plotIm}{logical}
+\item{plotIm}{logical. To plot the imputed variables. FALSE by default.}
 }
 \value{
-list
+A list with 8 objects if plotIm = FALSE. 9 elements otherwise.
 }
 \description{
-MSPQ_tidy
+MSPQ_tidy prepares the raw data set for the further analysis and genotype-trait classification. It also provides a summary with the outlier detection and variables imputation in case of so.
 }
 \examples{
 \dontrun{
