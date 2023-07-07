@@ -2,7 +2,7 @@
 % Please edit documentation in R/function_yield_calibration.R
 \name{yield_calibration}
 \alias{yield_calibration}
-\title{yield_calibration}
+\title{Comparisons between raknings and yield or trait of interest.}
 \usage{
 yield_calibration(ranks, yield.file, yield.name, metadata = NULL)
 }
@@ -23,6 +23,11 @@ yield_calibration contrasts the previous genotype-trait classification of Multis
 }
 \examples{
 \dontrun{
-yield_calibration()
+# yield_data: any table containing the same evaluated genotypes and the yield or any trait of interest to contrast against rankings
+
+yield_calibration(ranks = ranks,
+                  yield.file = yield_data,
+                  yield.name = kg_ha,
+                  metadata = NULL)
 }
 }

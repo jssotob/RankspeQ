@@ -2,7 +2,7 @@
 % Please edit documentation in R/function_MSPQ_analysisV1_ONLY_RANK.R
 \name{MSPQ_ranks}
 \alias{MSPQ_ranks}
-\title{MSPQ_ranks}
+\title{Computational genotype-trait classification.}
 \usage{
 MSPQ_ranks(
   out,
@@ -37,6 +37,8 @@ MSPQ_ranks computes the genotype-trait classification by days-of-measurement onc
 }
 \examples{
 \dontrun{
-MSPQ_ranks()
+ranks <- MSPQ_ranks(out = tidy_data, perIter = 100, PerSeed = 123,
+                    spats = FALSE, row = NULL, column = NULL,
+                    pl.date = FALSE)
 }
 }

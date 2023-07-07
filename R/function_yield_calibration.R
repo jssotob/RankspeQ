@@ -1,4 +1,4 @@
-#' yield_calibration
+#' Comparisons between raknings and yield or trait of interest.
 #'
 #' @param ranks The list obtained by MSPQ_ranks.
 #' @param yield.file data.frame in narrow format with the yield component or any other trait to contrast against MultispeQ ranking. An observation per experimental unit is required as well as the row & column coordinates if spats = TRUE in MSPQ_ranks.
@@ -10,7 +10,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' yield_calibration()
+#' # yield_data: any table containing the same evaluated genotypes and the yield or any trait of interest to contrast against rankings
+#'
+#' yield_calibration(ranks = ranks,
+#'                   yield.file = yield_data,
+#'                   yield.name = kg_ha,
+#'                   metadata = NULL)
 #' }
 yield_calibration <- function(ranks, yield.file, yield.name, metadata = NULL){
 
@@ -108,7 +113,7 @@ yield_calibration <- function(ranks, yield.file, yield.name, metadata = NULL){
       group_by_(.dots = c(ranks$Genotype, arr_SoV)) %>%
       summarise_if(.predicate = "is.numeric", .funs = "mean", na.rm=T) %>%
       ungroup %>% as.data.frame
-  }
+}
 
 
 # Confusion matrices ------------------------------------------------------
@@ -156,6 +161,8 @@ cat("Plotting confusion matrices... \n")
       mutate(eval = case_when(clus.m== clus.y~TRUE,
                               clus.y+1 == clus.m ~ TRUE,
                               clus.y-1 == clus.m~TRUE,
+                              # clus.y+2 == clus.m ~ TRUE,
+                              # clus.y-2 == clus.m~TRUE,
                               TRUE~FALSE),
              col = case_when(eval == TRUE~"Predicted",
                              clus.m >= (max(clus.m)-falses)+1&clus.y <= falses~"False Positive",
@@ -368,6 +375,9 @@ cat("Plotting confusion matrices... \n")
 
       ssss <- suppressMessages(do.call(rbind, conam) %>% left_join(.,metadata))
 
+      # temporal, no commit
+      aa <- ssss
+
       suppressMessages(ssss %<>%
         group_by_(.dots = c(ranks$Genotype, arr_SoV, cols)) %>%
         dplyr::summarise(Predicted = sum(col == "Predicted", na.rm = T),
@@ -391,6 +401,9 @@ cat("Plotting confusion matrices... \n")
     }
   } else{
     ssss <- do.call(rbind, conam)
+
+    # temporal, no commit
+    aa <- ssss
 
     suppressMessages(ssss %<>%
       group_by_(.dots = ranks$Genotype, arr_SoV) %>%
@@ -418,7 +431,8 @@ cat("Plotting confusion matrices... \n")
                    Summary_of_predictions = eval,
                    Summary_metadata = summary_table,
                    Metadata_tables = meta_tables,
-                   Metadata_plots = descriptors)
+                   Metadata_plots = descriptors,
+                   tabla = conam) #temporal)
     if(!is.null(ranks[["SPATS_variables"]])){
       output$yield.BLUP <- yield.transf
     }
@@ -428,7 +442,8 @@ cat("Plotting confusion matrices... \n")
   } else{
     output <- list(Conf_matrices = conf_matrices,
                    Summary_of_predictions = eval,
-                   Summary_metadata = summary_table)
+                   Summary_metadata = summary_table,
+                   tabla = conam) #temporal)
     if(!is.null(ranks[["SPATS_variables"]])){
       output$yield.BLUP <- yield.transf
     }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/function_MSPQ_tidyV2.R
 \name{MSPQ_tidy}
 \alias{MSPQ_tidy}
-\title{MSPQ_tidy}
+\title{Tidying and preparing the MultispeQ raw dataset.}
 \usage{
 MSPQ_tidy(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 }
@@ -25,6 +25,12 @@ MSPQ_tidy prepares the raw data set for the further analysis and genotype-trait 
 }
 \examples{
 \dontrun{
-MSPQ_tidy()
+#MSPQ_csv_data: any csv dataset obtained from the PhotosynQ Network.
+
+tidy_data <- MSPQ_tidy(df = MSPQ_csv_data,
+                       genotype = "Genotype",
+                       time.diff = FALSE,
+                       data_name = "My_Project",
+                       plotIm = TRUE)
 }
 }

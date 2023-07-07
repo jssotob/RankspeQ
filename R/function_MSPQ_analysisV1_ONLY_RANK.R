@@ -1,4 +1,4 @@
-#' MSPQ_ranks
+#' Computational genotype-trait classification.
 #'
 #' @param out The list obtained by MSPQ_tidy.
 #' @param perIter Integer. Number of iterations to conduct on the Phi Index permutational analysis. 100 by default.
@@ -13,7 +13,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' MSPQ_ranks()
+#' ranks <- MSPQ_ranks(out = tidy_data, perIter = 100, PerSeed = 123,
+#'                     spats = FALSE, row = NULL, column = NULL,
+#'                     pl.date = FALSE)
 #' }
 MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
                           spats = FALSE, row = NULL, column = NULL,
@@ -270,7 +272,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
       blups <- do.call(rbind,blups)
 
     } else {
-      warning("The row/column names provided not found in the dataset, the procedure will continue with no spatial adjusted BLUP's")
+      warning("The row/column names provided not found in the dataset, the procedure will continue with no spatial adjusted BLUP's", immediate. = T)
     }
 
   }
@@ -290,7 +292,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
   dates_rank <- lapply(as.character(unique(to_rank$date)), function(x)dplyr::filter(to_rank, date == x))
 
-  x <- c("LEF","NPQt","Phi2","PhiNO","PhiNPQ","PS1.Oxidized.Centers","FmPrime","FvP_over_FmP",
+  x <- c("LEF","NPQt","Phi2","PhiNO","PS1.Oxidized.Centers","FmPrime",
          "phi_index", "gH.", "P700_DIRK_ampl","Leaf.Temperature.Differential","PS1.Active.Centers",
          "PS1.Over.Reduced.Centers", "Relative.Chlorophyll","vH.", "FoPrime", "Fs",
          "kP700", "tP700", "v_initial_P700", "value1")
