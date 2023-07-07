@@ -353,14 +353,14 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   if("DAS" %in% SoV){
     plot_rank <- lapply(plots, function(s){
       plotly::ggplotly(s %>%
-                 ggplot(aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
-                 geom_point() +
-                 facet_wrap(~DAS, scales = "free_y", nrow = 2) +
-                 coord_flip() +
+                 ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
+                 ggplot2::geom_point() +
+                 ggplot2::facet_wrap(~DAS, scales = "free_y", nrow = 2) +
+                 ggplot2::coord_flip() +
                  tidytext::scale_x_reordered()+
-                 theme(axis.text.x = element_text(angle = 90, hjust = 1),
-                       axis.text.y = element_text(size = 5))+
-                 labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time))),
+                 ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1),
+                                axis.text.y = ggplot2::element_text(size = 5))+
+                 ggplot2::labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time))),
                       x = out$Genotype, y = "Final Score"))}
     )
 
@@ -368,14 +368,14 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
       plot_rank <- lapply(plots, function(s){
         plotly::ggplotly(s %>%
-                   ggplot(aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
-                   geom_point() +
-                   facet_wrap(~date, scales = "free_y", nrow = 2) +
-                   coord_flip() +
+                   ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
+                   ggplot2::geom_point() +
+                   ggplot2::facet_wrap(~date, scales = "free_y", nrow = 2) +
+                   ggplot2::coord_flip() +
                    tidytext::scale_x_reordered()+
-                   theme(axis.text.x = element_text(angle = 90, hjust = 1),
-                         axis.text.y = element_text(size = 5))+
-                   labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time)), collapse = "_"),
+                   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1),
+                                  axis.text.y = ggplot2::element_text(size = 5))+
+                   ggplot2::labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time)), collapse = "_"),
                         x = out$Genotype, y = "Final Score"))}
       )
     }

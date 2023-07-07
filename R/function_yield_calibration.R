@@ -234,19 +234,21 @@ cat("Plotting confusion matrices... \n")
 
 
     if("DAS" %in% ranks$Sources_of_variation){
-    conf_matrices[[i]] <- plotly::ggplotly(ggplot(aaa,aes_string(x = "factor(clus.y)", y = "factor(clus.m)", fill = "factor(col)",
+    conf_matrices[[i]] <- plotly::ggplotly(ggplot2::ggplot(aaa,
+                                                           ggplot2::aes_string(x = "factor(clus.y)", y = "factor(clus.m)", fill = "factor(col)",
                                                          text = "name"))+
-                                     geom_raster(alpha = 0.95)+
-                                     theme_classic()+
-                                     labs(title = paste0(data_loop$DAS[1]," ", as.character(data_loop$time[1]), " ", unique(data_loop[,arr_SoV])),
+                                           ggplot2::geom_raster(alpha = 0.95)+
+                                           ggplot2::theme_classic()+
+                                           ggplot2::labs(title = paste0(data_loop$DAS[1]," ", as.character(data_loop$time[1]), " ", unique(data_loop[,arr_SoV])),
                                           x = "Yield cluster", y = "MultispeQ cluster", fill = ""), tooltip="text")
     names(conf_matrices)[i] <- paste0(data_loop$DAS[1]," ", as.character(data_loop$time[1]), " ", unique(data_loop[,arr_SoV]))
     } else {
-      conf_matrices[[i]] <- plotly::ggplotly(ggplot(aaa,aes_string(x = "factor(clus.y)", y = "factor(clus.m)", fill = "factor(col)",
+      conf_matrices[[i]] <- plotly::ggplotly(ggplot2::ggplot(aaa,
+                                                             ggplot2::aes_string(x = "factor(clus.y)", y = "factor(clus.m)", fill = "factor(col)",
                                                            text = "name"))+
-                                       geom_raster(alpha = 0.95)+
-                                       theme_classic()+
-                                       labs(title = paste0(data_loop$date[1]," ", as.character(data_loop$time[1]), " ", unique(data_loop[,arr_SoV])),
+                                            ggplot2::geom_raster(alpha = 0.95)+
+                                            ggplot2::theme_classic()+
+                                            ggplot2::labs(title = paste0(data_loop$date[1]," ", as.character(data_loop$time[1]), " ", unique(data_loop[,arr_SoV])),
                                             x = "Yield cluster", y = "MultispeQ cluster", fill = ""), tooltip="text")
       names(conf_matrices)[i] <- paste0(data_loop$date[1]," ", as.character(data_loop$time[1]), " ", unique(data_loop[,arr_SoV]))
     }
@@ -308,7 +310,7 @@ cat("Plotting confusion matrices... \n")
                              False_Positive = sum(col == "False Positive", na.rm = T),
                              False_Negative = sum(col == "False Negative", na.rm = T)) %>%
             ungroup %>%
-            gather(., key = "x", value = "Number_of_Genotypes",Predicted, No_Predicted, False_Positive, False_Negative) %>%
+            tidyr::gather(., key = "x", value = "Number_of_Genotypes",Predicted, No_Predicted, False_Positive, False_Negative) %>%
             mutate(.,s = as.data.frame(descriptors[[i]][[j]])[1, cols[i]],
                    date = lubridate::ymd(date)))
           names(descriptors[[i]])[[j]] <- paste0(as.data.frame(descriptors[[i]][[j]])[1, "s"], " ", paste0(descriptors[[i]][[j]][1, arr_SoV], collapse = " "))
@@ -325,7 +327,7 @@ cat("Plotting confusion matrices... \n")
                                                 False_Positive = sum(col == "False Positive", na.rm = T),
                                                 False_Negative = sum(col == "False Negative", na.rm = T)) %>%
                                ungroup %>%
-                               gather(., key = "x", value = "Number_of_Genotypes",Predicted, No_Predicted, False_Positive, False_Negative) %>%
+                               tidyr::gather(., key = "x", value = "Number_of_Genotypes",Predicted, No_Predicted, False_Positive, False_Negative) %>%
                                mutate(.,s = as.data.frame(descriptors[[i]][[j]])[1, cols[i]],
                                       date = lubridate::ymd(date)))
             names(descriptors[[i]])[[j]] <- paste0(as.data.frame(descriptors[[i]][[j]])[1, "s"], " ", paste0(descriptors[[i]][[j]][1, arr_SoV], collapse = " "))
@@ -346,12 +348,13 @@ cat("Plotting confusion matrices... \n")
       title <- paste0(as.data.frame(descriptors[[i]][[j]])[1, "s"], " ", paste0(descriptors[[i]][[j]][1, arr_SoV], collapse = " "))
 
       descriptors[[i]][[j]] <-descriptors[[i]][[j]] %>%
-        ggplot(aes(x = DAS, y = Number_of_Genotypes, fill = factor(x, levels = c("Predicted","No_Predicted","False_Positive","False_Negative"))))+
-        geom_bar(stat = "identity", position = position_dodge(1))+
-        scale_fill_discrete(labels = c("Predicted","Low Prediction","False Positive","False Negative"))+
-        theme_bw()+
-        theme(legend.title = element_blank())+
-        labs(title = title, x = "Days After Sowing", y = "Occurrences (#)")
+        ggplot2::ggplot(ggplot2::aes(x = DAS, y = Number_of_Genotypes,
+                                     fill = factor(x, levels = c("Predicted","No_Predicted","False_Positive","False_Negative"))))+
+        ggplot2::geom_bar(stat = "identity", position = ggplot2::position_dodge(1))+
+        ggplot2::scale_fill_discrete(labels = c("Predicted","Low Prediction","False Positive","False Negative"))+
+        ggplot2::theme_bw()+
+        ggplot2::theme(legend.title = ggplot2::element_blank())+
+        ggplot2::labs(title = title, x = "Days After Sowing", y = "Occurrences (#)")
 
         }
       }
@@ -361,11 +364,13 @@ cat("Plotting confusion matrices... \n")
             title <- paste0(as.data.frame(descriptors[[i]][[j]])[1, "s"], " ", paste0(descriptors[[i]][[j]][1, arr_SoV], collapse = " "))
 
             descriptors[[i]][[j]] <- plotly::ggplotly(descriptors[[i]][[j]] %>%
-                                                ggplot(aes(x = date, y = Number_of_Genotypes, fill = factor(x, levels = c("Predicted","No_Predicted","False_Positive","False_Negative"))))+
-                                                geom_bar(stat = "identity", position = position_dodge(4.9))+
-                                                theme_bw()+
-                                                theme(legend.title = element_blank())+
-                                                labs(title = title, x = "Date", y = "Occurrences (#)"), tooltip = c("x", "y"))
+                                                      ggplot2::ggplot(ggplot2::aes(x = date,
+                                                                                   y = Number_of_Genotypes,
+                                                                                   fill = factor(x, levels = c("Predicted","No_Predicted","False_Positive","False_Negative"))))+
+                                                        ggplot2::geom_bar(stat = "identity", position = ggplot2::position_dodge(4.9))+
+                                                        ggplot2::theme_bw()+
+                                                        ggplot2::theme(legend.title = ggplot2::element_blank())+
+                                                        ggplot2::labs(title = title, x = "Date", y = "Occurrences (#)"), tooltip = c("x", "y"))
 
           }
         }

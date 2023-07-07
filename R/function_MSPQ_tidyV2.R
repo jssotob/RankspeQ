@@ -112,7 +112,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
     names(df)[names(df) == "time"] <- "date"
 
-    df <- separate(df,date,into = c("date", "time"), sep = " ")
+    df <- tidyr::separate(df,date,into = c("date", "time"), sep = " ")
 
     df$date <- as.Date(df$date, format = "%m/%d/%Y")
     df$time <- as.factor(df$time)
@@ -333,13 +333,15 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
       for(i in 1:length(to_impute)){
         nas <- which(is.na(to_impute[,i]))
-        plots[[i]] <- ggplot(cbind(new[[1]], new[[i+1]]), aes_string(x = "date", group = "date", y = names(to_impute)[i]))+
-          geom_boxplot(fill = "grey50")+
-          geom_point(data = cbind(new[[1]], new[[i+1]])[nas,], aes_string(x = "date", group = "date", y = names(to_impute)[i]),
+        plots[[i]] <- ggplot2::ggplot(cbind(new[[1]], new[[i+1]]),
+                                      ggplot2::aes_string(x = "date", group = "date", y = names(to_impute)[i]))+
+          ggplot2::geom_boxplot(fill = "grey50")+
+          ggplot2::geom_point(data = cbind(new[[1]], new[[i+1]])[nas,],
+                     ggplot2::aes_string(x = "date", group = "date", y = names(to_impute)[i]),
                      colour = "red")+
-          ylim(c(median(new[[i+1]][,1])-(median(new[[i+1]][,1])*4),median(new[[i+1]][,1])+(median(new[[i+1]][,1])*4)))+
-          labs(title = paste0("Imputed data for ", names(to_impute)[i]))+
-          theme_bw()
+          ggplot2::ylim(c(median(new[[i+1]][,1])-(median(new[[i+1]][,1])*4),median(new[[i+1]][,1])+(median(new[[i+1]][,1])*4)))+
+          ggplot2::labs(title = paste0("Imputed data for ", names(to_impute)[i]))+
+          ggplot2::theme_bw()
         names(plots)[i] <- names(to_impute)[i]
       }
       rm(i)
