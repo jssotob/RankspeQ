@@ -4,14 +4,14 @@
 \alias{yield_calibration}
 \title{Comparisons between raknings and yield or trait of interest.}
 \usage{
-yield_calibration(ranks, yield.file, yield.name, metadata = NULL)
+yield_calibration(ranks, target.trait.file, target.trait.name, metadata = NULL)
 }
 \arguments{
 \item{ranks}{The list obtained by MSPQ_ranks.}
 
-\item{yield.file}{data.frame in narrow format with the yield component or any other trait to contrast against MultispeQ ranking. An observation per experimental unit is required as well as the row & column coordinates if spats = TRUE in MSPQ_ranks.}
+\item{target.trait.file}{data.frame in narrow format with the yield component or any other trait to contrast against MultispeQ ranking. An observation per experimental unit is required as well as the row & column coordinates if spats = TRUE in MSPQ_ranks.}
 
-\item{yield.name}{Character. name of the yield variable on yield.file to contrast against MultispeQ ranking.}
+\item{target.trait.name}{Character. name of the yield variable on yield.file to contrast against MultispeQ ranking.}
 
 \item{metadata}{data.frame in narrow format with extra information about the genotypes i.e. gene pool, known biotic/abiotic traits, etc. Optional process. NULL by default.}
 }
@@ -26,8 +26,8 @@ yield_calibration contrasts the previous genotype-trait classification of Multis
 # yield_data: any table containing the same evaluated genotypes and the yield or any trait of interest to contrast against rankings
 
 yield_calibration(ranks = ranks,
-                  yield.file = yield_data,
-                  yield.name = kg_ha,
+                  target.trait.file = yield_data,
+                  target.trait.name = kg_ha,
                   metadata = NULL)
 }
 }
