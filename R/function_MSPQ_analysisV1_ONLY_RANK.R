@@ -216,7 +216,8 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
   odd_out <- collapsibleTree::collapsibleTree(odd_out,
                                               hierarchy = names(odd_out),
-                                              linkLength = 120)
+                                              linkLength = 220,
+                                              fontSize = 15)
   } else {
     odd_out <- "Procedure not done since time.dif = FALSE in MSPQ_tidy()"
   }
@@ -341,7 +342,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   ranks <- plyr::join_all(ranks, by= SoV, type='left')
   scores <- paste0(x,"_score")
   names(ranks)[grep("x", names(ranks))] <- scores
-  ranks$final_score <- rowSums(ranks[,grep("_score", names(ranks))])
+  ranks$cumulative_trait_score <- rowSums(ranks[,grep("_score", names(ranks))])
 
 
   # plots -------------------------------------------------------------------
@@ -353,7 +354,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   if("DAS" %in% SoV){
     plot_rank <- lapply(plots, function(s){
       plotly::ggplotly(s %>%
-                 ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
+                 ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",cumulative_trait_score, date)"), y = 'cumulative_trait_score')) +
                  ggplot2::geom_point() +
                  ggplot2::facet_wrap(~DAS, scales = "free_y", nrow = 2) +
                  ggplot2::coord_flip() +
@@ -361,14 +362,14 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
                  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1),
                                 axis.text.y = ggplot2::element_text(size = 5))+
                  ggplot2::labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time))),
-                      x = out$Genotype, y = "Final Score"))}
+                      x = out$Genotype, y = "Cumulative trait score"))}
     )
 
     } else {
 
       plot_rank <- lapply(plots, function(s){
         plotly::ggplotly(s %>%
-                   ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",final_score, date)"), y = 'final_score')) +
+                   ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(",out$Genotype,",cumulative_trait_score, date)"), y = 'cumulative_trait_score')) +
                    ggplot2::geom_point() +
                    ggplot2::facet_wrap(~date, scales = "free_y", nrow = 2) +
                    ggplot2::coord_flip() +
@@ -376,7 +377,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
                    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1),
                                   axis.text.y = ggplot2::element_text(size = 5))+
                    ggplot2::labs(title = paste0(unique(s[,arr_SoV]), " ", as.character(unique(s$time)), collapse = "_"),
-                        x = out$Genotype, y = "Final Score"))}
+                        x = out$Genotype, y = "Cumulative trait score"))}
       )
     }
 

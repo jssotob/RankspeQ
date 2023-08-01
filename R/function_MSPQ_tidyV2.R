@@ -325,7 +325,9 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
     to_impute <- to_impute[,-1]
 
-    miss <- collapsibleTree::collapsibleTree(miss, hierarchy = names(miss), collapsed = FALSE, linkLength = 120)
+    miss <- collapsibleTree::collapsibleTree(miss, hierarchy = names(miss),
+                                             collapsed = FALSE, linkLength = 120,
+                                             fontSize = 15)
 
     if(plotIm){
 
@@ -519,7 +521,9 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
     }
     rm_table$date <- lubridate::ymd(rm_table$date)
     rm_table %<>% arrange(desc(Freq))
-    rm_table <- collapsibleTree::collapsibleTree(rm_table, hierarchy = names(rm_table), collapsed = TRUE, linkLength = 120)
+    rm_table <- collapsibleTree::collapsibleTree(rm_table, hierarchy = names(rm_table),
+                                                 collapsed = TRUE, linkLength = 120,
+                                                 fontSize = 15)
 
   } else {
     rm_table <- "No observations were removed"
@@ -531,7 +535,11 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
   rownames(summary_table) <- NULL
   summary_table %<>%
     dplyr::select(factor, value)
-  summary_table <- collapsibleTree::collapsibleTree(summary_table, hierarchy = names(summary_table), collapsed = FALSE, zoomable = F, linkLength = 120)
+  summary_table <- collapsibleTree::collapsibleTree(summary_table,
+                                                    hierarchy = names(summary_table),
+                                                    collapsed = FALSE, zoomable = F,
+                                                    linkLength = 220,
+                                                    fontSize = 15)
 
   if(plotIm){
     out <- list(num_df, factor_df, summary_table, rm_data, rm_table, SoV_names, genotype, miss, plots)

@@ -125,13 +125,13 @@ cat("Plotting confusion matrices... \n")
 
   if("DAS" %in% ranks$Sources_of_variation){
   conam %<>%
-    dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "final_score", "DAS")) %>%
+    dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "cumulative_trait_score", "DAS")) %>%
     left_join(., yield.transf, by = c(ranks$Genotype, arr_SoV))
 
   conam <- as.list(group_split(conam,date, DAS, time, .dots = arr_SoV))
   } else {
     conam %<>%
-      dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "final_score")) %>%
+      dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "cumulative_trait_score")) %>%
       left_join(., yield.transf, by = c(ranks$Genotype, arr_SoV))
 
     conam <- as.list(group_split(conam,date, time, .dots = arr_SoV))
@@ -147,7 +147,7 @@ cat("Plotting confusion matrices... \n")
   for(i in 1:length(conam)){
 
     conam[[i]]$y.rank <- as.numeric(rank(conam[[i]][,target.trait.name]))
-    conam[[i]]$m.rank <- as.numeric(rank(conam[[i]][,"final_score"]))
+    conam[[i]]$m.rank <- as.numeric(rank(conam[[i]][,"cumulative_trait_score"]))
     conam[[i]] %<>% arrange(y.rank)
     clus <- round(nrow(conam[[i]])*0.1)
     conam[[i]]$clus.y <- rep(1:grupos,times = clus, length.out = nrow(conam[[i]])) %>% sort
