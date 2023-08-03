@@ -244,6 +244,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
   d <- d[,-which(names(d) %in% c("Latitude", "Longitude"))]
 
+  d
   miss <- VIM::aggr(d, col=c('navyblue','yellow'), plot = FALSE,
                numbers=TRUE, sortVars=TRUE,
                labels=names(d), cex.axis=.7,
@@ -335,12 +336,12 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
       for(i in 1:length(to_impute)){
         nas <- which(is.na(to_impute[,i]))
-        plots[[i]] <- ggplot2::ggplot(cbind(new[[1]], new[[i+1]]),
+        plots[[i]] <- ggplot2::ggplot(cbind(new[[1]], new[[i+1]]) %>% mutate(value = "Measured"),
                                       ggplot2::aes_string(x = "date", group = "date", y = names(to_impute)[i]))+
-          ggplot2::geom_boxplot(fill = "grey50")+
-          ggplot2::geom_point(data = cbind(new[[1]], new[[i+1]])[nas,],
-                     ggplot2::aes_string(x = "date", group = "date", y = names(to_impute)[i]),
-                     colour = "red")+
+          ggplot2::geom_boxplot(ggplot2::aes(fill = value))+
+          ggplot2::scale_fill_manual(values = "grey50")+
+          ggplot2::geom_point(data = cbind(new[[1]], new[[i+1]])[nas,] %>% mutate(value = "Imputed"),
+                     ggplot2::aes_string(x = "date", group = "date", y = names(to_impute)[i],color = "value"))+
           ggplot2::ylim(c(median(new[[i+1]][,1])-(median(new[[i+1]][,1])*4),median(new[[i+1]][,1])+(median(new[[i+1]][,1])*4)))+
           ggplot2::labs(title = paste0("Imputed data for ", names(to_impute)[i]))+
           ggplot2::theme_bw()
@@ -351,7 +352,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
 
     to_impute <- do.call(cbind,new)
 
-    rm(new)
+    #rm(new)
 
     num_df <- suppressWarnings(dplyr::select_(num_df, .dots = names(num_df)[!to_sort %in% variables]))
     num_df <- data.frame(num_df, to_impute[,2:length(to_impute)])

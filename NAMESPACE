@@ -2,4 +2,4 @@
 
 export(MSPQ_ranks)
 export(MSPQ_tidy)
-export(yield_calibration)
+export(target_trait_comparison)
