@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 output: github_document
 ---
@@ -27,3 +28,34 @@ You can install the development version of RankspeQ from [GitHub](https://github
 # install.packages("devtools")
 devtools::install_github("jssotob/RankspeQ")
 ```
+=======
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# RankspeQ
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+With the new technologies in plant phenotyping, robust and reliable tools are still required to analyze large-scale and multivariate datasets. The RankspeQ is a novel R package developed to evaluate genotype performance and to support selection-driven decisions based on leaf traits and environment-related variables measured by the MultispeQ device. The presented software consists of 3 main functions: i) data cleaning, ii) computational trait-genotype ranking, and iii) comparison of accessions against grain yield or another crop trait. Optionally, the evaluation can be performed by alternative groups which can be defined by the user, such as genepools, families, among others. The software development as well as the data evaluation was made with datasets of Phaseolus spp. experiments. However, R code - with easy modifications - can be used on any other crop. The tool help to understand the hidden potential of MultispeQ equipment and  - most importantly - identify important crop traits useful in a genotype characterization in particular environments. The tool has direct potential for physiologists, breeders etc. as it identifies the best performing accessions. However, it also targets false positive results with high yield but low photosynthetic performance. We also propose to use a new efficiency index used to calculate the ratio of incoming radiation for net photosynthesis in proportion to light dissipation processes. Further updates will include new algorithms (e.g. trait heritability) and a shiny interface to make the software user friendly.
+## Installation
+
+You can install the development version of RankspeQ from [GitHub](https://github.com/jssotob/RankspeQ) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("jssotob/RankspeQ")
+```
+>>>>>>> 2bcdfdb8054800f0e0bdfb6b6ee6773f02b62a96
