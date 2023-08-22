@@ -22,8 +22,7 @@
 #' )
 #' }
 MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE) {
-  # suppressWarnings(suppressMessages(library(dplyr)))
-  # suppressWarnings(suppressMessages(library(magrittr)))
+  
 
   if ("Leaf.Temperature.Differenial" %in% names(df)) df %<>% dplyr::select(-Leaf.Temperature.Differenial)
 
