@@ -20,9 +20,6 @@
 #' )
 #' }
 target_trait_comparison <- function(ranks, target.trait.file, target.trait.name, metadata = NULL) {
-
-
-
   if (!is.null(target.trait.file)) {
     if (!is.data.frame(target.trait.file)) {
       stop(paste0("The argument target.trait.file must be a data frame that contains the '", ranks$Genotype, "' column and the target trait to evaluate."))
@@ -81,7 +78,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
     arr_SoV <- ranks$Sources_of_variation[sov_rm]
     rm(sov_rm)
 
-    yield.list <- as.list(group_split(target.trait.file, .dots = arr_SoV))
+    yield.list <- as.list(dplyr::group_split(target.trait.file, .dots = arr_SoV))
     yield.list <- lapply(yield.list, function(x) as.data.frame(x))
 
     yield.model <- list()
@@ -115,9 +112,9 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
     rm(sov_rm)
 
     yield.transf <- target.trait.file %>%
-      group_by_(.dots = c(ranks$Genotype, arr_SoV)) %>%
-      summarise_if(.predicate = "is.numeric", .funs = "mean", na.rm = T) %>%
-      ungroup() %>%
+      dplyr::group_by_(.dots = c(ranks$Genotype, arr_SoV)) %>%
+      dplyr::summarise_if(.predicate = "is.numeric", .funs = "mean", na.rm = T) %>%
+      dplyr::ungroup() %>%
       as.data.frame()
   }
 
@@ -132,15 +129,15 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
   if ("DAS" %in% ranks$Sources_of_variation) {
     conam %<>%
       dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "cumulative_trait_score", "DAS")) %>%
-      left_join(., yield.transf, by = c(ranks$Genotype, arr_SoV))
+      dplyr::left_join(., yield.transf, by = c(ranks$Genotype, arr_SoV))
 
-    conam <- as.list(group_split(conam, date, DAS, time, .dots = arr_SoV))
+    conam <- as.list(dplyr::group_split(conam, date, DAS, time, .dots = arr_SoV))
   } else {
     conam %<>%
       dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "cumulative_trait_score")) %>%
-      left_join(., yield.transf, by = c(ranks$Genotype, arr_SoV))
+      dplyr::left_join(., yield.transf, by = c(ranks$Genotype, arr_SoV))
 
-    conam <- as.list(group_split(conam, date, time, .dots = arr_SoV))
+    conam <- as.list(dplyr::group_split(conam, date, time, .dots = arr_SoV))
   }
 
 
@@ -153,18 +150,18 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
   for (i in 1:length(conam)) {
     conam[[i]]$y.rank <- as.numeric(rank(conam[[i]][, target.trait.name]))
     conam[[i]]$m.rank <- as.numeric(rank(conam[[i]][, "cumulative_trait_score"]))
-    conam[[i]] %<>% arrange(y.rank)
+    conam[[i]] %<>% dplyr::arrange(y.rank)
     clus <- round(nrow(conam[[i]]) * 0.1)
     conam[[i]]$clus.y <- rep(1:grupos, times = clus, length.out = nrow(conam[[i]])) %>% sort()
 
-    conam[[i]] %<>% arrange(m.rank)
+    conam[[i]] %<>% dplyr::arrange(m.rank)
     conam[[i]]$clus.m <- rep(1:grupos, times = clus, length.out = nrow(conam[[i]])) %>% sort()
 
 
     conam[[i]] %<>%
-      arrange(clus.y) %>%
-      mutate(
-        eval = case_when(
+      dplyr::arrange(clus.y) %>%
+      dplyr::mutate(
+        eval = dplyr::case_when(
           clus.m == clus.y ~ TRUE,
           clus.y + 1 == clus.m ~ TRUE,
           clus.y - 1 == clus.m ~ TRUE,
@@ -172,7 +169,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
           # clus.y-2 == clus.m~TRUE,
           TRUE ~ FALSE
         ),
-        col = case_when(
+        col = dplyr::case_when(
           eval == TRUE ~ "Predicted",
           clus.m >= (max(clus.m) - falses) + 1 & clus.y <= falses ~ "False Positive",
           clus.y >= (max(clus.m) - falses) + 1 & clus.m <= falses ~ "False Negative",
@@ -210,9 +207,9 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
   if ("DAS" %in% ranks$Sources_of_variation) {
     for (i in 1:length(conam)) {
       eval[[i]] <- conam[[i]] %>%
-        group_by(col) %>%
+        dplyr::group_by(col) %>%
         dplyr::summarise(Count = dplyr::n()) %>%
-        mutate(conf_matrix = paste0(unique(conam[[i]][, arr_SoV]), " ", conam[[i]]$DAS[1], " ", as.character(conam[[i]]$time[1]))) %>%
+        dplyr::mutate(conf_matrix = paste0(unique(conam[[i]][, arr_SoV]), " ", conam[[i]]$DAS[1], " ", as.character(conam[[i]]$time[1]))) %>%
         dplyr::select(conf_matrix, col, Count) %>%
         dplyr::rename(Variable = col)
     }
@@ -220,9 +217,9 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
   } else {
     for (i in 1:length(conam)) {
       eval[[i]] <- conam[[i]] %>%
-        group_by(col) %>%
+        dplyr::group_by(col) %>%
         dplyr::summarise(Count = dplyr::n()) %>%
-        mutate(conf_matrix = paste0(unique(conam[[i]][, arr_SoV]), " ", conam[[i]]$date[1], " ", as.character(conam[[i]]$time[1]))) %>%
+        dplyr::mutate(conf_matrix = paste0(unique(conam[[i]][, arr_SoV]), " ", conam[[i]]$date[1], " ", as.character(conam[[i]]$time[1]))) %>%
         dplyr::select(conf_matrix, col, Count) %>%
         dplyr::rename(Variable = col)
     }
@@ -233,7 +230,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
 
   for (i in 1:length(conam)) {
     data_loop <- conam[[i]]
-    aaa <- as.list(group_split(data_loop, clus.y, clus.m))
+    aaa <- as.list(dplyr::group_split(data_loop, clus.y, clus.m))
     aaa <- lapply(aaa, function(x) {
       x$name <- paste0(unlist(c(x[, ranks$Genotype])), collapse = "\n")
       return(x)
@@ -303,7 +300,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
         warning(paste0("The genotype(s) '", paste0((gen_index), collapse = "', '"), "' from the metadata file not found into the ranked genotypes. This procedure is not done"), immediate. = T)
       }
     } else {
-      metadatos <- suppressMessages(lapply(1:length(conam), function(x) left_join(conam[[x]], metadata)))
+      metadatos <- suppressMessages(lapply(1:length(conam), function(x) dplyr::left_join(conam[[x]], metadata)))
 
       cols <- names(metadatos[[1]])[which(!names(metadatos[[1]]) %in% names(conam[[1]]))]
 
@@ -316,8 +313,8 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
 
       for (i in 1:length(cols)) {
         descriptors[[i]] <- metadatos %>%
-          group_by_(.dots = c(cols[i], arr_SoV)) %>%
-          group_split() %>%
+          dplyr::group_by_(.dots = c(cols[i], arr_SoV)) %>%
+          dplyr::group_split() %>%
           as.list()
       }
       rm(i)
@@ -326,16 +323,16 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
         for (i in 1:length(descriptors)) {
           for (j in 1:length(descriptors[[i]])) {
             suppressMessages(descriptors[[i]][[j]] %<>%
-              group_by_(.dots = c("DAS", "date", arr_SoV)) %>%
+              dplyr::group_by_(.dots = c("DAS", "date", arr_SoV)) %>%
               dplyr::summarise(
                 Predicted = sum(col == "Predicted", na.rm = T),
                 No_Predicted = sum(col == "Low Prediction", na.rm = T),
                 False_Positive = sum(col == "False Positive", na.rm = T),
                 False_Negative = sum(col == "False Negative", na.rm = T)
               ) %>%
-              ungroup() %>%
+              dplyr::ungroup() %>%
               tidyr::gather(., key = "x", value = "Number_of_Genotypes", Predicted, No_Predicted, False_Positive, False_Negative) %>%
-              mutate(.,
+              dplyr::mutate(.,
                 s = as.data.frame(descriptors[[i]][[j]])[1, cols[i]],
                 date = lubridate::ymd(date)
               ))
@@ -347,16 +344,16 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
         for (i in 1:length(descriptors)) {
           for (j in 1:length(descriptors[[i]])) {
             suppressMessages(descriptors[[i]][[j]] %<>%
-              group_by_(.dots = c("date", arr_SoV)) %>%
+              dplyr::group_by_(.dots = c("date", arr_SoV)) %>%
               dplyr::summarise(
                 Predicted = sum(col == "Predicted", na.rm = T),
                 No_Predicted = sum(col == "Low Prediction", na.rm = T),
                 False_Positive = sum(col == "False Positive", na.rm = T),
                 False_Negative = sum(col == "False Negative", na.rm = T)
               ) %>%
-              ungroup() %>%
+              dplyr::ungroup() %>%
               tidyr::gather(., key = "x", value = "Number_of_Genotypes", Predicted, No_Predicted, False_Positive, False_Negative) %>%
-              mutate(.,
+              dplyr::mutate(.,
                 s = as.data.frame(descriptors[[i]][[j]])[1, cols[i]],
                 date = lubridate::ymd(date)
               ))
@@ -409,32 +406,32 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
 
 
 
-      ssss <- suppressMessages(do.call(rbind, conam) %>% left_join(., metadata))
+      ssss <- suppressMessages(do.call(rbind, conam) %>% dplyr::left_join(., metadata))
 
       # temporal, no commit
       aa <- ssss
 
       suppressMessages(ssss %<>%
-        group_by_(.dots = c(ranks$Genotype, arr_SoV, cols)) %>%
+        dplyr::group_by_(.dots = c(ranks$Genotype, arr_SoV, cols)) %>%
         dplyr::summarise(
           Predicted = sum(col == "Predicted", na.rm = T),
           Low_Prediction = sum(col == "Low Prediction", na.rm = T),
           False_Positive = sum(col == "False Positive", na.rm = T),
           False_Negative = sum(col == "False Negative", na.rm = T)
         ) %>%
-        ungroup())
+        dplyr::ungroup())
 
       suppressMessages(dates <- do.call(rbind, conam) %>%
-        group_by_(.dots = ranks$Genotype, arr_SoV) %>%
+        dplyr::group_by_(.dots = ranks$Genotype, arr_SoV) %>%
         dplyr::summarise(
           Times = dplyr::n(),
           Dates = Times / 2
         ) %>%
-        ungroup())
+        dplyr::ungroup())
 
 
 
-      summary_table <- suppressMessages(DT::datatable(left_join(ssss, dates)))
+      summary_table <- suppressMessages(DT::datatable(dplyr::left_join(ssss, dates)))
     }
   } else {
     ssss <- do.call(rbind, conam)
@@ -443,26 +440,26 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
     aa <- ssss
 
     suppressMessages(ssss %<>%
-      group_by_(.dots = ranks$Genotype, arr_SoV) %>%
+      dplyr::group_by_(.dots = ranks$Genotype, arr_SoV) %>%
       dplyr::summarise(
         Predicted = sum(col == "Predicted", na.rm = T),
         Low_Prediction = sum(col == "Low Prediction", na.rm = T),
         False_Positive = sum(col == "False Positive", na.rm = T),
         False_Negative = sum(col == "False Negative", na.rm = T)
       ) %>%
-      ungroup())
+      dplyr::ungroup())
 
     suppressMessages(dates <- do.call(rbind, conam) %>%
-      group_by_(.dots = ranks$Genotype, arr_SoV) %>%
+      dplyr::group_by_(.dots = ranks$Genotype, arr_SoV) %>%
       dplyr::summarise(
         Times = dplyr::n(),
         Dates = Times / 2
       ) %>%
-      ungroup())
+      dplyr::ungroup())
 
 
 
-    summary_table <- suppressMessages(DT::datatable(left_join(ssss, dates)))
+    summary_table <- suppressMessages(DT::datatable(dplyr::left_join(ssss, dates)))
   }
 
   cat("Making return\n")

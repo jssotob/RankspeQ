@@ -3,3 +3,7 @@
 export(MSPQ_ranks)
 export(MSPQ_tidy)
 export(target_trait_comparison)
+export("%>%")
+importFrom(magrittr,"%>%")
+export("%<>%")
+importFrom(magrittr,"%<>%")
