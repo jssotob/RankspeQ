@@ -129,13 +129,17 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
   if ("DAS" %in% ranks$Sources_of_variation) {
     conam %<>%
       dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "cumulative_trait_score", "DAS")) %>%
-      dplyr::left_join(., yield.transf, by = c(ranks$Genotype, arr_SoV))
+      dplyr::left_join(., yield.transf %>%
+                         dplyr::select(dplyr::all_of(c(ranks$Genotype, arr_SoV, target.trait.name))),
+                       by = c(ranks$Genotype, arr_SoV))
 
     conam <- as.list(dplyr::group_split(conam, date, DAS, time, .dots = arr_SoV))
   } else {
     conam %<>%
       dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "cumulative_trait_score")) %>%
-      dplyr::left_join(., yield.transf, by = c(ranks$Genotype, arr_SoV))
+      dplyr::left_join(., yield.transf %>%
+                         dplyr::select(dplyr::all_of(c(ranks$Genotype, arr_SoV, target.trait.name))),
+                       by = c(ranks$Genotype, arr_SoV))
 
     conam <- as.list(dplyr::group_split(conam, date, time, .dots = arr_SoV))
   }
@@ -468,11 +472,10 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
     output <- list(
       Conf_matrices = conf_matrices,
       Summary_of_predictions = eval,
-      Summary_metadata = summary_table,
+      Summary_per_Genotype = summary_table,
       Metadata_tables = meta_tables,
       Metadata_plots = descriptors,
-      tabla = conam
-    ) # temporal)
+    )
     if (!is.null(ranks[["SPATS_variables"]])) {
       output$yield.BLUP <- yield.transf
     }
@@ -482,9 +485,8 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
     output <- list(
       Conf_matrices = conf_matrices,
       Summary_of_predictions = eval,
-      Summary_metadata = summary_table,
-      tabla = conam
-    ) # temporal)
+      Summary_per_Genotype = summary_table
+    )
     if (!is.null(ranks[["SPATS_variables"]])) {
       output$yield.BLUP <- yield.transf
     }
