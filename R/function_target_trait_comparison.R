@@ -130,16 +130,18 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
     conam %<>%
       dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "cumulative_trait_score", "DAS")) %>%
       dplyr::left_join(., yield.transf %>%
-                         dplyr::select(dplyr::all_of(c(ranks$Genotype, arr_SoV, target.trait.name))),
-                       by = c(ranks$Genotype, arr_SoV))
+        dplyr::select(dplyr::all_of(c(ranks$Genotype, arr_SoV, target.trait.name))),
+      by = c(ranks$Genotype, arr_SoV)
+      )
 
     conam <- as.list(dplyr::group_split(conam, date, DAS, time, .dots = arr_SoV))
   } else {
     conam %<>%
       dplyr::select_(.dots = c("date", "time", ranks$Genotype, arr_SoV, "cumulative_trait_score")) %>%
       dplyr::left_join(., yield.transf %>%
-                         dplyr::select(dplyr::all_of(c(ranks$Genotype, arr_SoV, target.trait.name))),
-                       by = c(ranks$Genotype, arr_SoV))
+        dplyr::select(dplyr::all_of(c(ranks$Genotype, arr_SoV, target.trait.name))),
+      by = c(ranks$Genotype, arr_SoV)
+      )
 
     conam <- as.list(dplyr::group_split(conam, date, time, .dots = arr_SoV))
   }
@@ -186,27 +188,6 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
 
   eval <- list()
 
-  # if("DAS" %in% ranks$Sources_of_variation){
-  #   for(i in 1:length(conam)){
-  #     eval[[i]] <- DT::datatable(conam[[i]] %>%
-  #       group_by(col) %>%
-  #       dplyr::summarise(Count = dplyr::n()) %>%
-  #       mutate(conf_matrix = paste0(unique(conam[[i]][,arr_SoV]), " ", conam[[i]]$DAS[1]," ", as.character(conam[[i]]$time[1]))) %>%
-  #       dplyr::select(conf_matrix, col, Count) %>%
-  #       dplyr::rename(Variable = col))
-  #     names(eval)[[i]] <- eval[[i]]$x$data$conf_matrix[1]
-  #   }
-  # } else {
-  #   for(i in 1:length(conam)){
-  #     eval[[i]] <- DT::datatable(conam[[i]] %>%
-  #                                  group_by(col) %>%
-  #                                  dplyr::summarise(Count = dplyr::n()) %>%
-  #                                  mutate(conf_matrix = paste0(unique(conam[[i]][,arr_SoV]), " ", conam[[i]]$date[1]," ", as.character(conam[[i]]$time[1]))) %>%
-  #                                  dplyr::select(conf_matrix, col, Count) %>%
-  #                                  dplyr::rename(Variable = col))
-  #     names(eval)[[i]] <- eval[[i]]$x$data$conf_matrix[1]
-  #   }
-  # }
 
   if ("DAS" %in% ranks$Sources_of_variation) {
     for (i in 1:length(conam)) {
@@ -412,8 +393,6 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
 
       ssss <- suppressMessages(do.call(rbind, conam) %>% dplyr::left_join(., metadata))
 
-      # temporal, no commit
-      aa <- ssss
 
       suppressMessages(ssss %<>%
         dplyr::group_by_(.dots = c(ranks$Genotype, arr_SoV, cols)) %>%
@@ -439,9 +418,6 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
     }
   } else {
     ssss <- do.call(rbind, conam)
-
-    # temporal, no commit
-    aa <- ssss
 
     suppressMessages(ssss %<>%
       dplyr::group_by_(.dots = ranks$Genotype, arr_SoV) %>%
