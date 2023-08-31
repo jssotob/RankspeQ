@@ -450,7 +450,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
       Summary_of_predictions = eval,
       Summary_per_Genotype = summary_table,
       Metadata_tables = meta_tables,
-      Metadata_plots = descriptors,
+      Metadata_plots = descriptors
     )
     if (!is.null(ranks[["SPATS_variables"]])) {
       output$yield.BLUP <- yield.transf
