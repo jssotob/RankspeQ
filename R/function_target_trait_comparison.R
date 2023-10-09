@@ -453,7 +453,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
       Metadata_plots = descriptors
     )
     if (!is.null(ranks[["SPATS_variables"]])) {
-      output$yield.BLUP <- yield.transf
+      output$target.trait.BLUP <- yield.transf
     }
     cat("Done!!!\n")
     return(output)
@@ -464,7 +464,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
       Summary_per_Genotype = summary_table
     )
     if (!is.null(ranks[["SPATS_variables"]])) {
-      output$yield.BLUP <- yield.transf
+      output$target.trait.BLUP <- yield.transf
     }
     cat("Done!!!\n")
     return(output)
