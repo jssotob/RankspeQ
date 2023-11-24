@@ -446,6 +446,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
 
   if (!is.null(metadata)) {
     output <- list(
+      #conam = conam,
       Conf_matrices = conf_matrices,
       Summary_of_predictions = eval,
       Summary_per_Genotype = summary_table,
@@ -459,6 +460,7 @@ target_trait_comparison <- function(ranks, target.trait.file, target.trait.name,
     return(output)
   } else {
     output <- list(
+      #conam = conam,
       Conf_matrices = conf_matrices,
       Summary_of_predictions = eval,
       Summary_per_Genotype = summary_table

@@ -19,6 +19,7 @@ Imports:
     ez,
     ggplot2,
     imputeTS,
+    installr,
     lme4,
     lmerTest,
     lubridate,

@@ -322,6 +322,14 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
     }
     rm(i)
 
+    for(i in 1:length(per_date)){
+      for(j in 1:length(per_date[[i]])){
+        per_date[[i]][[j]] %<>% as.data.frame()
+      }
+    }
+
+    rm(i,j)
+
     for (i in 1:length(per_date)) {
       for (j in 1:length(per_date[[i]])) {
         if (any(x[y] %in% c(
