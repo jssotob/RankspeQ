@@ -22,7 +22,7 @@
 #' )
 #' }
 MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE) {
-  
+
 
   if ("Leaf.Temperature.Differenial" %in% names(df)) df %<>% dplyr::select(-Leaf.Temperature.Differenial)
 
@@ -50,7 +50,7 @@ MSPQ_tidy <- function(df, genotype, time.diff, data_name = NULL, plotIm = FALSE)
     "Time.of.Day", "tP700", "tt1", "tt2",
     "tt3", "tt4", "v_initial_P700", "value1",
     "value2", "value3", "YII", "User",
-    "Device.ID", "Latitude", "Longitude", "Issues"
+    "Device.ID", "Latitude", "Longitude", "Issues", "timestamp"
   )
 
 

@@ -246,7 +246,6 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
         "kP700", "tP700", "v_initial_P700", "value1"
       )
 
-
       varia <- varia[varia %in% x]
 
       blups <- list()
@@ -357,7 +356,11 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   ranks <- plyr::join_all(ranks, by = SoV, type = "left")
   scores <- paste0(x, "_score")
   names(ranks)[grep("x", names(ranks))] <- scores
-  ranks$cumulative_trait_score <- rowSums(ranks[, grep("_score", names(ranks))])
+  if(length(grep("_score", names(ranks)))==1){
+    ranks$cumulative_trait_score <-ranks[, grep("_score", names(ranks))]
+  } else {
+    ranks$cumulative_trait_score <- rowSums(ranks[, grep("_score", names(ranks))])
+  }
 
 
   # plots -------------------------------------------------------------------
