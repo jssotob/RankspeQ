@@ -110,7 +110,7 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
       p.dates <- do.call(rbind, p.dates)
       df_a <- suppressMessages(dplyr::left_join(df_a, p.dates) %>%
-        dplyr::mutate(DAS = paste0(date - planting_date, " DAS")))
+                                 dplyr::mutate(DAS = paste0(date - planting_date, " DAS")))
     }
     SoV <- c("DAS", SoV)
   }
@@ -217,9 +217,9 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
     }
 
     odd_out <- collapsibleTree::collapsibleTree(odd_out,
-      hierarchy = names(odd_out),
-      linkLength = 220,
-      fontSize = 15
+                                                hierarchy = names(odd_out),
+                                                linkLength = 220,
+                                                fontSize = 15
     )
   } else {
     odd_out <- "Procedure not done since time.dif = FALSE in MSPQ_tidy()"
@@ -239,12 +239,10 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
         dplyr::select_if(is.numeric) %>%
         names()
 
-      x <- c(
-        "LEF", "NPQt", "Phi2", "PhiNO", "PhiNPQ", "PS1.Oxidized.Centers", "FmPrime", "FvP_over_FmP",
-        "phi_index", "gH.", "P700_DIRK_ampl", "Leaf.Temperature.Differential", "PS1.Active.Centers",
-        "PS1.Over.Reduced.Centers", "Relative.Chlorophyll", "vH.", "FoPrime", "Fs",
-        "kP700", "tP700", "v_initial_P700", "value1"
-      )
+      x <- c("LEF","NPQt","Phi2","PhiNO","PhiNPQ","PS1.Oxidized.Centers","FmPrime","FvP_over_FmP",
+             "phi_index", "ECSt.mAU", "gH.","Leaf.Temperature.Differential","PS1.Active.Centers",
+             "PS1.Over.Reduced.Centers", "Relative.Chlorophyll","vH.", "ECS_tau", "FoPrime", "Fs",
+             "kP700", "P700_DIRK_ampl", "tP700", "v_initial_P700", "value1", "value2", "value3")
 
       varia <- varia[varia %in% x]
 
@@ -299,12 +297,11 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
   dates_rank <- lapply(as.character(unique(to_rank$date)), function(x) dplyr::filter(to_rank, date == x))
 
-  x <- c(
-    "LEF", "NPQt", "Phi2", "PhiNO", "PS1.Oxidized.Centers", "FmPrime",
-    "phi_index", "gH.", "P700_DIRK_ampl", "Leaf.Temperature.Differential", "PS1.Active.Centers",
-    "PS1.Over.Reduced.Centers", "Relative.Chlorophyll", "vH.", "FoPrime", "Fs",
-    "kP700", "tP700", "v_initial_P700", "value1"
-  )
+  x <- c("LEF","NPQt","Phi2","PhiNO","PhiNPQ","PS1.Oxidized.Centers","FmPrime","FvP_over_FmP",
+         "phi_index", "ECSt.mAU", "gH.","Leaf.Temperature.Differential","PS1.Active.Centers",
+         "PS1.Over.Reduced.Centers", "Relative.Chlorophyll","vH.", "ECS_tau", "FoPrime", "Fs",
+         "kP700", "P700_DIRK_ampl", "tP700", "v_initial_P700", "value1", "value2", "value3")
+
 
   x <- names(df_a)[names(df_a) %in% x]
 
@@ -316,8 +313,8 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
     for (i in 1:length(dates_rank)) {
       per_date[[i]] <- as.list(dates_rank[[i]] %>%
-        dplyr::select(all_of(c(SoV, x[y]))) %>%
-        dplyr::group_split(.dots = c("time", arr_SoV)))
+                                 dplyr::select(all_of(c(SoV, x[y]))) %>%
+                                 dplyr::group_split(.dots = c("time", arr_SoV)))
     }
     rm(i)
 
@@ -331,11 +328,9 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
 
     for (i in 1:length(per_date)) {
       for (j in 1:length(per_date[[i]])) {
-        if (any(x[y] %in% c(
-          "LEF", "NPQt", "PhiNPQ", "PS1.Oxidized.Centers", "Vh.",
-          "v_initial_P700", "gH.", "P700_DIRK_ampl",
-          "kP700", "Leaf.Temperature.Differential"
-        ))) {
+        if (any(x[y] %in% c("LEF", "NPQt", "PhiNPQ", "PS1.Oxidized.Centers", "Vh.",
+                            "v_initial_P700", "P700_DIRK_ampl", "ECSt.mAU", "gH.",
+                            "kP700", "Leaf.Temperature.Differential","value2", "value3"))) {
           per_date[[i]][[j]] <- per_date[[i]][[j]][order(-per_date[[i]][[j]][, x[y]]), ]
         } else {
           per_date[[i]][[j]] <- per_date[[i]][[j]][order(per_date[[i]][[j]][, x[y]]), ]
@@ -372,36 +367,36 @@ MSPQ_ranks <- function(out, perIter = 100, PerSeed = 123,
   if ("DAS" %in% SoV) {
     plot_rank <- lapply(plots, function(s) {
       plotly::ggplotly(s %>%
-        ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(", out$Genotype, ",cumulative_trait_score, date)"), y = "cumulative_trait_score")) +
-        ggplot2::geom_point() +
-        ggplot2::facet_wrap(~DAS, scales = "free_y", nrow = 2) +
-        ggplot2::coord_flip() +
-        tidytext::scale_x_reordered() +
-        ggplot2::theme(
-          axis.text.x = ggplot2::element_text(angle = 90, hjust = 1),
-          axis.text.y = ggplot2::element_text(size = 5)
-        ) +
-        ggplot2::labs(
-          title = paste0(unique(s[, arr_SoV]), " ", as.character(unique(s$time))),
-          x = out$Genotype, y = "Cumulative trait score"
-        ))
+                         ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(", out$Genotype, ",cumulative_trait_score, date)"), y = "cumulative_trait_score")) +
+                         ggplot2::geom_point() +
+                         ggplot2::facet_wrap(~DAS, scales = "free_y", nrow = 2) +
+                         ggplot2::coord_flip() +
+                         tidytext::scale_x_reordered() +
+                         ggplot2::theme(
+                           axis.text.x = ggplot2::element_text(angle = 90, hjust = 1),
+                           axis.text.y = ggplot2::element_text(size = 5)
+                         ) +
+                         ggplot2::labs(
+                           title = paste0(unique(s[, arr_SoV]), " ", as.character(unique(s$time))),
+                           x = out$Genotype, y = "Cumulative trait score"
+                         ))
     })
   } else {
     plot_rank <- lapply(plots, function(s) {
       plotly::ggplotly(s %>%
-        ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(", out$Genotype, ",cumulative_trait_score, date)"), y = "cumulative_trait_score")) +
-        ggplot2::geom_point() +
-        ggplot2::facet_wrap(~date, scales = "free_y", nrow = 2) +
-        ggplot2::coord_flip() +
-        tidytext::scale_x_reordered() +
-        ggplot2::theme(
-          axis.text.x = ggplot2::element_text(angle = 90, hjust = 1),
-          axis.text.y = ggplot2::element_text(size = 5)
-        ) +
-        ggplot2::labs(
-          title = paste0(unique(s[, arr_SoV]), " ", as.character(unique(s$time)), collapse = "_"),
-          x = out$Genotype, y = "Cumulative trait score"
-        ))
+                         ggplot2::ggplot(ggplot2::aes_string(x = paste0("tidytext::reorder_within(", out$Genotype, ",cumulative_trait_score, date)"), y = "cumulative_trait_score")) +
+                         ggplot2::geom_point() +
+                         ggplot2::facet_wrap(~date, scales = "free_y", nrow = 2) +
+                         ggplot2::coord_flip() +
+                         tidytext::scale_x_reordered() +
+                         ggplot2::theme(
+                           axis.text.x = ggplot2::element_text(angle = 90, hjust = 1),
+                           axis.text.y = ggplot2::element_text(size = 5)
+                         ) +
+                         ggplot2::labs(
+                           title = paste0(unique(s[, arr_SoV]), " ", as.character(unique(s$time)), collapse = "_"),
+                           x = out$Genotype, y = "Cumulative trait score"
+                         ))
     })
   }
 

@@ -21,6 +21,9 @@
 #' }
 target_trait_comparison <- function(ranks, target.trait.file, target.trait.name, metadata = NULL) {
   if (!is.null(target.trait.file)) {
+    if(tibble::is_tibble(target.trait.file)){
+      target.trait.file <- as.data.frame(target.trait.file)
+    }
     if (!is.data.frame(target.trait.file)) {
       stop(paste0("The argument target.trait.file must be a data frame that contains the '", ranks$Genotype, "' column and the target trait to evaluate."))
     } else if (!ranks$Genotype %in% names(target.trait.file)) {
